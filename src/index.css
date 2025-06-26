@@ -1,0 +1,465 @@
+/* === GENERALES === */
+body {
+  font-family: 'Segoe UI', sans-serif;
+  margin: 0;
+  padding: 0;
+  background-color: #f9fafc;
+  color: #333;
+  scroll-behavior: smooth;
+}
+
+/* === FORMULARIO MEJORADO === */
+#formulario {
+  background-color: white;
+  max-width: 800px;
+  margin: 60px auto;
+  padding: 40px;
+  border-radius: 16px;
+  box-shadow: 0 6px 30px rgba(0, 0, 0, 0.1);
+  animation: zoomInFade 1.2s ease;
+}
+
+#formulario h2 {
+  text-align: center;
+  margin-bottom: 30px;
+  font-size: 28px;
+  color: #1d3557;
+}
+
+/* Distribución en 2 columnas */
+.form-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 24px;
+}
+
+/* Estilo para cada campo */
+.form-group {
+  display: flex;
+  flex-direction: column;
+}
+
+.form-group label {
+  font-weight: 600;
+  margin-bottom: 6px;
+  color: #333;
+}
+
+.form-group input,
+.form-group select {
+  padding: 10px 12px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  font-size: 15px;
+  transition: border-color 0.3s ease;
+  font-family: 'Segoe UI', sans-serif;
+}
+
+.form-group input:focus,
+.form-group select:focus {
+  border-color: #007bff;
+  outline: none;
+}
+
+/* Botón */
+#formulario button {
+  margin-top: 30px;
+  width: 100%;
+  padding: 14px;
+  font-size: 16px;
+  font-weight: bold;
+  background-color: #1d3557;
+  color: white;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+#formulario button:hover {
+  background-color: #16324f;
+}
+
+/* Responsive extra */
+@media (max-width: 480px) {
+  #formulario {
+    padding: 20px;
+  }
+
+  #formulario h2 {
+    font-size: 22px;
+  }
+}
+
+
+
+
+/* === HERO MODERNO CON ANIMACIÓN === */
+.hero {
+  background: linear-gradient(135deg, #1d3557, #457b9d);
+  color: white;
+  padding: 120px 20px;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.hero::before {
+  content: '';
+  position: absolute;
+  top: -20%;
+  left: -10%;
+  width: 140%;
+  height: 200%;
+  background: radial-gradient(circle at top left, rgba(255,255,255,0.08), transparent 70%);
+  transform: rotate(15deg);
+  z-index: 0;
+  animation: glow 6s ease-in-out infinite;
+}
+
+.hero-content {
+  position: relative;
+  z-index: 1;
+  max-width: 700px;
+  margin: 0 auto;
+  background: rgba(255,255,255,0.05);
+  padding: 40px;
+  border-radius: 16px;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.2);
+  animation: zoomInFade 1.5s ease-out;
+}
+
+.hero h1 {
+  font-size: 52px;
+  margin-bottom: 10px;
+  font-weight: bold;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+}
+
+.hero h1::before {
+  content: "🧠";
+  font-size: 48px;
+  animation: pulse 2.5s infinite;
+}
+
+.hero p {
+  font-size: 22px;
+  line-height: 1.6;
+  color: #e0e0e0;
+  margin-bottom: 30px;
+}
+
+/* Botón CTA */
+.cta-button {
+  background-color: #e63946;
+  color: white;
+  padding: 12px 25px;
+  border: none;
+  border-radius: 8px;
+  font-size: 16px;
+  text-decoration: none;
+  transition: background 0.3s ease;
+  cursor: pointer;
+}
+
+.cta-button:hover {
+  background-color: #d62828;
+}
+
+/* === ANIMACIONES === */
+@keyframes pulse {
+  0%, 100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.2);
+    opacity: 0.8;
+  }
+}
+
+@keyframes zoomInFade {
+  0% {
+    opacity: 0;
+    transform: scale(0.9) translateY(20px);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+@keyframes glow {
+  0%, 100% {
+    opacity: 0.05;
+  }
+  50% {
+    opacity: 0.12;
+  }
+}
+
+/* === SECCIÓN "¿Cómo funciona?" === */
+.intro {
+  background: linear-gradient(to right, #edf2f7, #dbe9f4);
+  padding: 80px 30px;
+  border-radius: 20px;
+  margin: 60px auto;
+  max-width: 1100px;
+  box-shadow: 0 10px 35px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+  animation: introFade 1.2s ease-out forwards;
+  opacity: 0;
+}
+
+@keyframes introFade {
+  0% {
+    opacity: 0;
+    transform: translateY(40px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.intro-content {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.intro-text {
+  flex: 1 1 480px;
+  padding-right: 40px;
+}
+
+.intro-text h2 {
+  font-size: 36px;
+  color: #1d3557;
+  margin-bottom: 20px;
+}
+
+.intro-text p {
+  font-size: 18px;
+  color: #333;
+  margin-bottom: 20px;
+  line-height: 1.6;
+}
+
+.intro-text .benefits {
+  list-style: none;
+  padding-left: 0;
+}
+
+.intro-text .benefits li {
+  font-size: 16px;
+  padding: 8px 0;
+  color: #2b2b2b;
+}
+
+.intro-image {
+  flex: 1 1 320px;
+  text-align: center;
+}
+
+.intro-image img {
+  max-width: 260px;
+  filter: drop-shadow(0px 10px 20px rgba(0, 0, 0, 0.1));
+  animation: floatSlow 4s ease-in-out infinite;
+}
+
+@keyframes floatSlow {
+  0%, 100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-16px);
+  }
+}
+
+/* RESPONSIVE */
+@media screen and (max-width: 768px) {
+  .intro-content {
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .intro-text {
+    padding: 0;
+  }
+
+  .intro-image {
+    margin-top: 30px;
+  }
+}
+
+
+/* === FOOTER === */
+.footer {
+  margin-top: 60px;
+  padding: 30px;
+  background-color: #f1f1f1;
+  text-align: center;
+  color: #555;
+  font-size: 14px;
+}
+
+/* === RESPONSIVE === */
+@media screen and (max-width: 768px) {
+  .hero h1 {
+    font-size: 36px;
+  }
+
+  .intro {
+    flex-direction: column;
+  }
+
+  .intro .image img {
+    margin-top: 10px;
+  }
+}
+
+
+.preguntas-extra {
+  margin: 60px auto;
+  padding: 30px;
+  max-width: 800px;
+  background: #ffffff;
+  border-radius: 16px;
+  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.1);
+  animation: zoomInFade 0.6s ease;
+}
+
+.preguntas-extra h3 {
+  font-size: 26px;
+  margin-bottom: 10px;
+  color: #1d3557;
+}
+
+.predefinidas {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin: 20px 0;
+}
+
+.predefinidas button {
+  padding: 10px 14px;
+  background: #e63946;
+  border: none;
+  border-radius: 10px;
+  color: white;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+
+.predefinidas button:hover {
+  background: #d62828;
+}
+
+.pregunta-libre {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.pregunta-libre input {
+  flex: 1;
+  padding: 10px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+}
+
+.pregunta-libre button {
+  padding: 10px 16px;
+  background: #1d3557;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+/* Contenedor principal */
+.predicciones {
+  max-width: 900px;
+  margin: 60px auto;
+  padding: 40px;
+  background-color: #ffffff;
+  border-radius: 20px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.07);
+  text-align: center;
+  animation: fadeIn 0.7s ease;
+}
+
+.predicciones h3 {
+  font-size: 28px;
+  color: #1d3557;
+  margin-bottom: 30px;
+}
+
+/* Grid de gráficas */
+.predicciones-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 28px;
+  justify-content: center;
+  align-items: stretch;
+}
+
+/* Tarjeta de cada gráfica */
+.grafica-card {
+  background: #f8f9fb;
+  padding: 28px;
+  border-radius: 16px;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.06);
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  transition: transform 0.3s ease;
+}
+
+.grafica-card:hover {
+  transform: scale(1.02);
+}
+
+.grafica-card p {
+  margin-bottom: 14px;
+  font-size: 15px;
+  color: #444;
+  font-weight: 500;
+  min-height: 45px;
+}
+
+/* Botón "ver más" */
+.ver-mas {
+  margin-top: 32px;
+  padding: 12px 28px;
+  font-size: 16px;
+  background-color: #1d3557;
+  color: white;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.ver-mas:hover {
+  background-color: #16324f;
+}
+
+/* Animación entrada */
+@keyframes fadeIn {
+  0% {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

@@ -1,4 +1,5 @@
-import { Bar } from 'react-chartjs-2'
+import { forwardRef } from 'react';
+import { Bar } from 'react-chartjs-2';
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -7,16 +8,9 @@ import {
   Title,
   Tooltip,
   Legend
-} from 'chart.js'
+} from 'chart.js';
 
-ChartJS.register(
-  CategoryScale,
-  LinearScale,
-  BarElement,
-  Title,
-  Tooltip,
-  Legend
-)
+ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
 
 const frasesHumanas = {
   Mental_Health_Score: 'salud mental',
@@ -26,19 +20,18 @@ const frasesHumanas = {
   Sleep_Hours_Per_Night: 'horas de sueño',
   Affects_Academic_Performance: 'rendimiento académico',
   Relationship_Status: 'estado de relación'
-}
+};
 
 function evaluar(valor, promedio) {
-  if (valor > promedio + 1) return 'por encima de lo esperado'
-  if (valor < promedio - 1) return 'por debajo de lo esperado'
-  return 'dentro de un rango saludable'
+  if (valor > promedio + 1) return 'por encima de lo esperado';
+  if (valor < promedio - 1) return 'por debajo de lo esperado';
+  return 'dentro de un rango saludable';
 }
 
 function generarFrase(target, valor, promedio) {
-  const concepto = frasesHumanas[target] || 'tu resultado'
-  const evaluacion = evaluar(valor, promedio)
-
-  return `Tus ${concepto} es de ${valor}, mientras que el promedio general es de ${promedio}. Estás ${evaluacion}.`
+  const concepto = frasesHumanas[target] || 'tu resultado';
+  const evaluacion = evaluar(valor, promedio);
+  return `Tus ${concepto} es de ${valor}, mientras que el promedio general es de ${promedio}. Estás ${evaluacion}.`;
 }
 
 function generarDatos(valor, promedio) {
@@ -52,29 +45,29 @@ function generarDatos(valor, promedio) {
         borderRadius: 6
       }
     ]
-  }
+  };
 }
 
-export default function PrediccionesExtras({ predicciones }) {
-  if (!predicciones || predicciones.length === 0) return null
+const PrediccionesExtras = forwardRef(({ predicciones }, ref) => {
+  if (!predicciones || predicciones.length === 0) return null;
 
-  const ultima = predicciones[predicciones.length - 1]
-  const { target, valor_usuario, promedio_general } = ultima
+  const ultima = predicciones[predicciones.length - 1];
+  const { target, valor_usuario, promedio_general } = ultima;
 
   if (
     !target ||
     typeof valor_usuario !== 'number' ||
     typeof promedio_general !== 'number'
   ) {
-    console.warn('❌ Predicción inválida descartada:', ultima)
-    return null
+    console.warn('❌ Predicción inválida descartada:', ultima);
+    return null;
   }
 
-  const frase = generarFrase(target, valor_usuario, promedio_general)
-  const data = generarDatos(valor_usuario, promedio_general)
+  const frase = generarFrase(target, valor_usuario, promedio_general);
+  const data = generarDatos(valor_usuario, promedio_general);
 
   return (
-    <section className="predicciones">
+    <section className="predicciones" ref={ref}>
       <h3>💡 Predicción reciente</h3>
       <div className="predicciones-grid">
         <div className="grafica-card">
@@ -105,5 +98,7 @@ export default function PrediccionesExtras({ predicciones }) {
         </div>
       </div>
     </section>
-  )
-}
+  );
+});
+
+export default PrediccionesExtras;

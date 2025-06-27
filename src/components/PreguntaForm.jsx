@@ -1,17 +1,15 @@
 import { useState } from "react";
 import { hacerPregunta } from "../services/api";
 
-// Normaliza preguntas con tildes y signos como ¿ ¡
 function normalizarPregunta(texto) {
   return texto
-    .normalize("NFD") // separa letras de acentos
-    .replace(/[\u0300-\u036f]/g, "") // elimina acentos
-    .replace(/[¿¡]/g, "") // elimina signos de apertura
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .replace(/[¿¡]/g, "")
     .trim()
     .toLowerCase();
 }
 
-// ✅ Preguntas predefinidas que sí se responden correctamente según los targets reales
 const preguntasPredefinidas = [
   { texto: "¿Cómo está mi salud mental?", clave: "Mental_Health_Score" },
   { texto: "¿Tengo conflictos por redes sociales?", clave: "Conflicts_Over_Social_Media" },
@@ -24,28 +22,33 @@ const preguntasPredefinidas = [
   { texto: "¿Mi relación me está afectando?", clave: "Affects_Academic_Performance" },
 ];
 
-
-export default function PreguntaForm({ datosUsuario, onNuevaPrediccion }) {
+export default function PreguntaForm({ datosUsuario, onNuevaPrediccion, prediccionRef }) {
   const [preguntaLibre, setPreguntaLibre] = useState("");
   const [cargando, setCargando] = useState(false);
 
-const handlePreguntaClick = async (preguntaTexto) => {
-  setCargando(true);
-  try {
-    const res = await hacerPregunta(datosUsuario, preguntaTexto);
-    if (res.error) {
-      alert("⚠️ No se pudo obtener una predicción para esta pregunta.");
-    } else {
-onNuevaPrediccion(res);
-    }
-  } catch (err) {
-    alert("❌ Error al hacer predicción.");
-    console.error(err);
-  } finally {
-    setCargando(false);
-  }
-};
+  const hacerScroll = () => {
+    setTimeout(() => {
+      prediccionRef?.current?.scrollIntoView({ behavior: "smooth" });
+    }, 300);
+  };
 
+  const handlePreguntaClick = async (preguntaTexto) => {
+    setCargando(true);
+    try {
+      const res = await hacerPregunta(datosUsuario, preguntaTexto);
+      if (res.error) {
+        alert("⚠️ No se pudo obtener una predicción para esta pregunta.");
+      } else {
+        onNuevaPrediccion(res);
+        hacerScroll();
+      }
+    } catch (err) {
+      alert("❌ Error al hacer predicción.");
+      console.error(err);
+    } finally {
+      setCargando(false);
+    }
+  };
 
   const handleLibre = async () => {
     if (!preguntaLibre.trim()) return;
@@ -57,8 +60,9 @@ onNuevaPrediccion(res);
       if (res.error) {
         alert("⚠️ No se pudo entender tu pregunta. Intenta reformularla.");
       } else {
-onNuevaPrediccion(res);
+        onNuevaPrediccion(res);
         setPreguntaLibre("");
+        hacerScroll();
       }
     } catch (err) {
       alert("❌ Error al hacer predicción personalizada.");
@@ -71,14 +75,16 @@ onNuevaPrediccion(res);
   return (
     <section className="preguntas-extra">
       <h3>🧠 ¿Quieres saber más?</h3>
-      <p>Selecciona una pregunta o escribe la tuya.</p>
+      <p className="subtext">
+        Nuestra IA puede decirte más cosas según tu comportamiento en redes.
+        Selecciona una pregunta o escribe la tuya.
+      </p>
 
       <div className="predefinidas">
         {preguntasPredefinidas.map(({ texto, clave }) => (
-<button key={clave} onClick={() => handlePreguntaClick(texto)} disabled={cargando}>
-  {texto}
-</button>
-
+          <button key={clave} onClick={() => handlePreguntaClick(texto)} disabled={cargando}>
+            {texto}
+          </button>
         ))}
       </div>
 
@@ -90,7 +96,7 @@ onNuevaPrediccion(res);
           onChange={(e) => setPreguntaLibre(e.target.value)}
         />
         <button onClick={handleLibre} disabled={cargando}>
-          Enviar pregunta
+          Preguntar IA
         </button>
       </div>
     </section>

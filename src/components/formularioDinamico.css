@@ -1,0 +1,113 @@
+/* === Contenedor principal del formulario === */
+.formulario-dinamico {
+  background-color: #1f2937; /* gris oscuro */
+  color: #fff;
+  padding: 2rem;
+  border-radius: 1.25rem;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4);
+  max-width: 600px;
+  margin: 2rem auto;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+/* === Título e introducción === */
+.formulario-dinamico h2 {
+  font-size: 1.8rem;
+  font-weight: bold;
+  margin-bottom: 0.5rem;
+  text-align: center;
+}
+
+.formulario-dinamico p {
+  font-size: 1rem;
+  color: #cbd5e1;
+  text-align: center;
+  line-height: 1.4;
+}
+
+/* === Grupo de campos === */
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  animation: fadeInUp 0.4s ease forwards;
+}
+
+.form-group label {
+  font-weight: 600;
+  font-size: 0.95rem;
+}
+
+.form-group input,
+.form-group select {
+  background-color: #111827;
+  border: 1px solid #4b5563;
+  color: #fff;
+  padding: 0.6rem 0.8rem;
+  border-radius: 0.5rem;
+  font-size: 1rem;
+  transition: border 0.2s ease;
+}
+
+.form-group input:focus,
+.form-group select:focus {
+  outline: none;
+  border-color: #10b981;
+}
+
+/* === Botones === */
+.boton-accion {
+  background-color: #10b981;
+  color: white;
+  border: none;
+  padding: 0.75rem 1.2rem;
+  border-radius: 0.75rem;
+  font-weight: 600;
+  font-size: 1rem;
+  cursor: pointer;
+  align-self: center;
+  transition: background-color 0.3s ease;
+}
+
+.boton-accion:hover {
+  background-color: #059669;
+}
+
+/* === Animación de aparición suave === */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* === Mensaje final o errores === */
+.mensaje-final {
+  text-align: center;
+  font-size: 1rem;
+  color: #facc15;
+  margin-top: 1rem;
+}
+
+.mensaje-error {
+  color: #f87171;
+  font-size: 0.9rem;
+  margin-top: 0.3rem;
+}
+
+/* === Responsivo === */
+@media (max-width: 500px) {
+  .formulario-dinamico {
+    padding: 1.5rem 1rem;
+  }
+
+  .formulario-dinamico h2 {
+    font-size: 1.5rem;
+  }
+}

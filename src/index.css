@@ -8,294 +8,460 @@ body {
   scroll-behavior: smooth;
 }
 
-/* === FORMULARIO MEJORADO === */
+
+
+/* === FORMULARIO PROFESIONAL CON SEPARACIÓN Y PROFUNDIDAD === */
+
 #formulario {
-  background-color: white;
-  max-width: 800px;
-  margin: 60px auto;
-  padding: 40px;
-  border-radius: 16px;
-  box-shadow: 0 6px 30px rgba(0, 0, 0, 0.1);
-  animation: zoomInFade 1.2s ease;
+  background: linear-gradient(145deg, #ffffff, #bad1f4);
+  max-width: 860px;
+  margin: 80px auto;
+  padding: 60px 50px;
+  border-radius: 20px;
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.08);
+  animation: zoomInFade 1s ease;
+  border: 1px solid #dfe6ed;
 }
 
 #formulario h2 {
   text-align: center;
-  margin-bottom: 30px;
-  font-size: 28px;
+  margin-bottom: 40px;
+  font-size: 30px;
   color: #1d3557;
+  font-weight: 800;
 }
 
-/* Distribución en 2 columnas */
-.form-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-  gap: 24px;
-}
-
-/* Estilo para cada campo */
+/* === Grupo de campos === */
 .form-group {
   display: flex;
   flex-direction: column;
+  padding: 16px 18px;
+  margin-bottom: 28px;
+  background: #ffffff;
+  border-radius: 14px;
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.04);
 }
 
 .form-group label {
-  font-weight: 600;
-  margin-bottom: 6px;
-  color: #333;
+  font-weight: 700;
+  margin-bottom: 10px;
+  font-size: 16px;
+  color: #2b2b2b;
 }
 
+/* === Inputs y selects === */
 .form-group input,
 .form-group select {
-  padding: 10px 12px;
-  border: 1px solid #ccc;
-  border-radius: 8px;
+  padding: 12px 14px;
+  border: 1px solid #cdd5df;
+  border-radius: 10px;
   font-size: 15px;
-  transition: border-color 0.3s ease;
+  background-color: #f8fbfd;
+  transition: all 0.3s ease;
   font-family: 'Segoe UI', sans-serif;
 }
 
 .form-group input:focus,
 .form-group select:focus {
   border-color: #007bff;
+  background-color: #ffffff;
   outline: none;
 }
 
-/* Botón */
-#formulario button {
+/* === Botones === */
+#formulario button,
+.btn {
+  display: inline-block;
   margin-top: 30px;
   width: 100%;
-  padding: 14px;
-  font-size: 16px;
-  font-weight: bold;
-  background-color: #1d3557;
+  padding: 16px;
+  font-size: 17px;
+  font-weight: 700;
+  background: linear-gradient(135deg, #1d3557, #27496d);
   color: white;
   border: none;
+  border-radius: 14px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+#formulario button:hover,
+.btn:hover {
+  background: linear-gradient(135deg, #16324f, #1d3557);
+  transform: scale(1.02);
+}
+
+/* === Autocomplete === */
+.autocomplete-input {
+  padding: 12px;
+  border: 1px solid #ccc;
   border-radius: 10px;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
+  font-size: 15px;
+  background-color: #f8f9fa;
 }
 
-#formulario button:hover {
-  background-color: #16324f;
-}
-
-/* Responsive extra */
-@media (max-width: 480px) {
-  #formulario {
-    padding: 20px;
-  }
-
-  #formulario h2 {
-    font-size: 22px;
-  }
-}
-
-
-
-
-/* === HERO MODERNO CON ANIMACIÓN === */
-.hero {
-  background: linear-gradient(135deg, #1d3557, #457b9d);
-  color: white;
-  padding: 120px 20px;
-  text-align: center;
-  position: relative;
-  overflow: hidden;
-}
-
-.hero::before {
-  content: '';
+.autocomplete-list {
   position: absolute;
-  top: -20%;
-  left: -10%;
-  width: 140%;
-  height: 200%;
-  background: radial-gradient(circle at top left, rgba(255,255,255,0.08), transparent 70%);
-  transform: rotate(15deg);
-  z-index: 0;
-  animation: glow 6s ease-in-out infinite;
+  top: 100%;
+  left: 0;
+  right: 0;
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 0 0 8px 8px;
+  max-height: 180px;
+  overflow-y: auto;
+  z-index: 10;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  list-style: none;
+  margin: 0;
+  padding: 0;
 }
 
-.hero-content {
-  position: relative;
-  z-index: 1;
-  max-width: 700px;
-  margin: 0 auto;
-  background: rgba(255,255,255,0.05);
-  padding: 40px;
-  border-radius: 16px;
-  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.2);
-  animation: zoomInFade 1.5s ease-out;
-}
-
-.hero h1 {
-  font-size: 52px;
-  margin-bottom: 10px;
-  font-weight: bold;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 10px;
-}
-
-.hero h1::before {
-  content: "🧠";
-  font-size: 48px;
-  animation: pulse 2.5s infinite;
-}
-
-.hero p {
-  font-size: 22px;
-  line-height: 1.6;
-  color: #e0e0e0;
-  margin-bottom: 30px;
-}
-
-/* Botón CTA */
-.cta-button {
-  background-color: #e63946;
-  color: white;
-  padding: 12px 25px;
-  border: none;
-  border-radius: 8px;
-  font-size: 16px;
-  text-decoration: none;
-  transition: background 0.3s ease;
+.autocomplete-list li {
+  padding: 12px 14px;
   cursor: pointer;
+  transition: background 0.2s;
 }
 
-.cta-button:hover {
-  background-color: #d62828;
+.autocomplete-list li:hover {
+  background-color: #f0f0f0;
 }
 
-/* === ANIMACIONES === */
-@keyframes pulse {
-  0%, 100% {
-    transform: scale(1);
-    opacity: 1;
-  }
-  50% {
-    transform: scale(1.2);
-    opacity: 0.8;
-  }
+/* === Grid de plataformas sociales === */
+.platform-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+  gap: 20px;
+  margin-top: 14px;
 }
 
+.platform-card {
+  border: 2px solid transparent;
+  border-radius: 14px;
+  padding: 18px 12px;
+  text-align: center;
+  cursor: pointer;
+  background: #f9fbfe;
+  box-shadow: 0 5px 10px rgba(0, 0, 0, 0.04);
+  transition: all 0.3s ease;
+}
+
+.platform-card:hover {
+  background-color: #eef2f6;
+  transform: scale(1.05);
+}
+
+.platform-card.selected {
+  border-color: #1d3557;
+  background-color: #dceeff;
+  box-shadow: 0 6px 14px rgba(0, 0, 0, 0.06);
+}
+
+.platform-icon {
+  font-size: 30px;
+  margin-bottom: 8px;
+}
+
+.platform-label {
+  font-size: 15px;
+  font-weight: 600;
+}
+
+/* Botón de cambiar red social */
+.change-btn {
+  font-size: 14px;
+  color: #1d3557;
+  background: none;
+  border: none;
+  margin-top: 12px;
+  cursor: pointer;
+  text-decoration: underline;
+  transition: color 0.3s ease;
+}
+
+.change-btn:hover {
+  color: #0c243b;
+}
+
+/* === Animaciones === */
 @keyframes zoomInFade {
-  0% {
+  from {
     opacity: 0;
-    transform: scale(0.9) translateY(20px);
+    transform: scale(0.95);
   }
-  100% {
+  to {
     opacity: 1;
-    transform: scale(1) translateY(0);
+    transform: scale(1);
   }
 }
 
-@keyframes glow {
-  0%, 100% {
-    opacity: 0.05;
-  }
-  50% {
-    opacity: 0.12;
-  }
+.animate-fade-in {
+  animation: fadeIn 0.5s ease-out;
 }
 
-/* === SECCIÓN "¿Cómo funciona?" === */
-.intro {
-  background: linear-gradient(to right, #edf2f7, #dbe9f4);
-  padding: 80px 30px;
-  border-radius: 20px;
-  margin: 60px auto;
-  max-width: 1100px;
-  box-shadow: 0 10px 35px rgba(0, 0, 0, 0.1);
-  overflow: hidden;
-  animation: introFade 1.2s ease-out forwards;
-  opacity: 0;
-}
-
-@keyframes introFade {
-  0% {
+@keyframes fadeIn {
+  from {
     opacity: 0;
-    transform: translateY(40px);
+    transform: translateY(12px);
   }
-  100% {
+  to {
     opacity: 1;
     transform: translateY(0);
   }
 }
 
-.intro-content {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  justify-content: space-between;
+/* Responsive */
+@media (max-width: 480px) {
+  #formulario {
+    padding: 28px;
+  }
+
+  #formulario h2 {
+    font-size: 22px;
+  }
+
+  .form-group {
+    padding: 12px;
+    margin-bottom: 20px;
+  }
+
+  .platform-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
 }
 
-.intro-text {
-  flex: 1 1 480px;
-  padding-right: 40px;
+
+
+
+/* === HERO PROFESIONAL CON TEXTURAS Y PROFUNDIDAD === */
+.hero {
+  position: relative;
+  background: linear-gradient(145deg, #0f2027, #203a43, #2c5364);
+  color: white;
+  padding: 140px 20px;
+  text-align: center;
+  overflow: hidden;
+  box-shadow: inset 0 0 200px rgba(0, 0, 0, 0.3);
 }
 
-.intro-text h2 {
-  font-size: 36px;
-  color: #1d3557;
+.hero-overlay {
+  position: absolute;
+  inset: 0;
+  background-image: url('https://www.transparenttextures.com/patterns/stardust.png'); /* textura sutil */
+  opacity: 0.06;
+  z-index: 0;
+  pointer-events: none;
+}
+
+.hero-content {
+  position: relative;
+  z-index: 1;
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 50px 40px;
+  border-radius: 20px;
+  background: rgba(255, 255, 255, 0.03);
+  box-shadow:
+    0 10px 40px rgba(0, 0, 0, 0.4),
+    inset 0 0 30px rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(6px);
+  animation: fadeSlideIn 1.3s ease-out;
+}
+
+.hero h1 {
+  font-size: 60px;
+  font-weight: 900;
   margin-bottom: 20px;
+  letter-spacing: 2px;
+  background: linear-gradient(to right, #f8f8f8, #b5d4ff);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
 }
 
-.intro-text p {
-  font-size: 18px;
-  color: #333;
-  margin-bottom: 20px;
-  line-height: 1.6;
+.hero h1 .highlight {
+  color: #e63946;
+  background: none;
+  -webkit-text-fill-color: #e63946;
 }
 
-.intro-text .benefits {
-  list-style: none;
-  padding-left: 0;
+.hero p {
+  font-size: 20px;
+  color: #f0f0f0;
+  line-height: 1.7;
+  margin-bottom: 40px;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
 }
 
-.intro-text .benefits li {
-  font-size: 16px;
-  padding: 8px 0;
-  color: #2b2b2b;
+/* Botón CTA mejorado */
+.cta-button {
+  background: linear-gradient(145deg, #ff5e62, #ff9966);
+  color: white;
+  padding: 14px 30px;
+  font-size: 17px;
+  font-weight: 600;
+  border-radius: 50px;
+  text-decoration: none;
+  transition: all 0.3s ease;
+  box-shadow: 0 6px 18px rgba(255, 94, 98, 0.5);
+  border: none;
 }
 
-.intro-image {
-  flex: 1 1 320px;
+.cta-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(255, 94, 98, 0.6);
+}
+
+/* Animación suave al cargar */
+@keyframes fadeSlideIn {
+  0% {
+    opacity: 0;
+    transform: translateY(30px) scale(0.95);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+html {
+  scroll-behavior: smooth; /* respaldo para navegadores modernos */
+  scroll-padding-top: 80px; /* evita que elementos queden ocultos tras un header fijo */
+}
+
+
+/* === SECCIÓN INTRO COMPACTA === */
+.intro-section {
+  padding: 30px 20px;
+  background: linear-gradient(135deg, #f5f7fa, #e0ecf4);
+  border-radius: 30px;
+  max-width: 1000px;
+  margin: 20px auto;
+  box-shadow: 0 16px 50px rgba(0, 0, 0, 0.07);
   text-align: center;
 }
 
-.intro-image img {
-  max-width: 260px;
-  filter: drop-shadow(0px 10px 20px rgba(0, 0, 0, 0.1));
-  animation: floatSlow 4s ease-in-out infinite;
+.intro-texto-superior h2 {
+  font-size: 32px;
+  font-weight: 700;
+  color: #1d3557;
+  margin-bottom: 12px;
 }
 
-@keyframes floatSlow {
+.intro-texto-superior p {
+  font-size: 16px;
+  color: #444;
+  max-width: 720px;
+  margin: 0 auto 40px;
+  line-height: 1.6;
+}
+
+/* === CARDS MÁS COMPACTAS === */
+.intro-card-container {
+  display: flex;
+  gap: 20px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.intro-feature-card {
+  background: #fff;
+  border-radius: 16px;
+  padding: 30px 20px;
+  width: 260px;
+  min-height: 280px;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.05);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.intro-feature-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 14px 35px rgba(0, 0, 0, 0.08);
+}
+
+.intro-feature-card h4 {
+  font-size: 18px;
+  margin: 12px 0 8px;
+  color: #1d3557;
+  font-weight: 600;
+}
+
+.intro-feature-card p {
+  font-size: 14px;
+  color: #555;
+  line-height: 1.5;
+}
+
+/* === EMOJIS CON ANIMACIONES === */
+.emoji {
+  font-size: 32px;
+  display: inline-block;
+}
+
+/* Rayo parpadeante */
+.emoji-ray {
+  animation: flash-ray 1.2s infinite;
+}
+
+@keyframes flash-ray {
   0%, 100% {
-    transform: translateY(0px);
+    opacity: 1;
+    transform: scale(1);
   }
   50% {
-    transform: translateY(-16px);
+    opacity: 0.4;
+    transform: scale(1.2) rotate(10deg);
+  }
+}
+
+/* Cerebro palpitante */
+.emoji-brain {
+  animation: pulse-brain 2s infinite;
+}
+
+@keyframes pulse-brain {
+  0%, 100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.15);
+  }
+}
+
+/* Candado abriéndose y cerrándose */
+.emoji-lock {
+  animation: lock-pop 2.5s infinite;
+}
+
+@keyframes lock-pop {
+  0%, 100% {
+    transform: rotate(0deg);
+  }
+  25% {
+    transform: rotate(-12deg);
+  }
+  50% {
+    transform: rotate(0deg);
+  }
+  75% {
+    transform: rotate(12deg);
   }
 }
 
 /* RESPONSIVE */
 @media screen and (max-width: 768px) {
-  .intro-content {
+  .intro-card-container {
     flex-direction: column;
-    text-align: center;
+    align-items: center;
   }
 
-  .intro-text {
-    padding: 0;
-  }
-
-  .intro-image {
-    margin-top: 30px;
+  .intro-feature-card {
+    width: 90%;
   }
 }
+
 
 
 /* === FOOTER === */
@@ -324,64 +490,101 @@ body {
 }
 
 
+/* === SECCIÓN PREGUNTAS EXTRAS === */
 .preguntas-extra {
-  margin: 60px auto;
-  padding: 30px;
-  max-width: 800px;
-  background: #ffffff;
-  border-radius: 16px;
-  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.1);
-  animation: zoomInFade 0.6s ease;
+  margin: 80px auto;
+  padding: 40px;
+  max-width: 860px;
+  background: linear-gradient(145deg, #f0f4f8, #ffffff);
+  border-radius: 20px;
+  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.08);
+  animation: fadeSlideUp 0.8s ease forwards;
+  opacity: 0;
+  transform: translateY(20px);
+}
+
+@keyframes fadeSlideUp {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .preguntas-extra h3 {
-  font-size: 26px;
-  margin-bottom: 10px;
+  font-size: 30px;
+  margin-bottom: 8px;
   color: #1d3557;
+  text-align: center;
+}
+
+.preguntas-extra .subtext {
+  font-size: 16px;
+  color: #444;
+  text-align: center;
+  margin-bottom: 25px;
 }
 
 .predefinidas {
   display: flex;
   flex-wrap: wrap;
-  gap: 12px;
-  margin: 20px 0;
+  justify-content: center;
+  gap: 14px;
+  margin: 30px 0;
 }
 
 .predefinidas button {
-  padding: 10px 14px;
+  padding: 12px 18px;
   background: #e63946;
   border: none;
-  border-radius: 10px;
+  border-radius: 12px;
   color: white;
+  font-size: 15px;
   cursor: pointer;
-  transition: background 0.3s ease;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 12px rgba(230, 57, 70, 0.25);
 }
 
 .predefinidas button:hover {
-  background: #d62828;
+  background: #c92434;
+  transform: scale(1.05);
 }
 
 .pregunta-libre {
   display: flex;
-  gap: 10px;
   flex-wrap: wrap;
+  gap: 12px;
+  justify-content: center;
 }
 
 .pregunta-libre input {
   flex: 1;
-  padding: 10px;
-  border-radius: 8px;
+  min-width: 260px;
+  max-width: 480px;
+  padding: 12px;
+  border-radius: 10px;
   border: 1px solid #ccc;
+  font-size: 15px;
+  background-color: #f9f9f9;
+  box-shadow: inset 0 1px 3px rgba(0,0,0,0.05);
 }
 
 .pregunta-libre button {
-  padding: 10px 16px;
+  padding: 12px 20px;
   background: #1d3557;
   color: white;
   border: none;
-  border-radius: 8px;
+  border-radius: 10px;
   cursor: pointer;
+  font-size: 15px;
+  transition: background 0.3s ease, transform 0.3s ease;
+  box-shadow: 0 4px 14px rgba(29, 53, 87, 0.25);
 }
+
+.pregunta-libre button:hover {
+  background: #16324a;
+  transform: scale(1.05);
+}
+
 
 /* Contenedor principal */
 .predicciones {

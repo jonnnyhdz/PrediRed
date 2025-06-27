@@ -17,9 +17,7 @@ const preguntasPredefinidas = [
   { texto: "¿Es demasiado mi tiempo en redes?", clave: "Avg_Daily_Usage_Hours" },
   { texto: "¿Estoy durmiendo lo suficiente?", clave: "Sleep_Hours_Per_Night" },
   { texto: "¿Afectan las redes a mi rendimiento escolar?", clave: "Affects_Academic_Performance" },
-  { texto: "¿Cómo será mi próxima relación?", clave: "Relationship_Status" },
   { texto: "¿Estoy emocionalmente equilibrado?", clave: "Mental_Health_Score" },
-  { texto: "¿Mi relación me está afectando?", clave: "Affects_Academic_Performance" },
 ];
 
 export default function PreguntaForm({ datosUsuario, onNuevaPrediccion, prediccionRef }) {

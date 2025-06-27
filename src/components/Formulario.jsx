@@ -194,6 +194,7 @@ const campos = [
 export default function Formulario({ onPredicciones }) {
   const [form, setForm] = useState({
     Student_ID: Math.floor(Math.random() * 1000000),
+    Conflicts_Over_Social_Media: 0,
   });
   const [currentStep, setCurrentStep] = useState(0);
   const [started, setStarted] = useState(false);
@@ -239,11 +240,17 @@ const handleSubmit = async (e) => {
     const traducido = traducirCampos(form);
     const data = await enviarFormulario(traducido);
 
-    // Cerrar la alerta de carga
-    Swal.close();
+    Swal.close(); // Cerrar modal de carga
 
     // Lanzar predicciones al componente padre
     onPredicciones({ ...data.predictions, Student_ID: form.Student_ID });
+
+    // Deslizar hacia la sección de predicciones iniciales
+    setTimeout(() => {
+      document
+        .querySelector("#predicciones-iniciales")
+        ?.scrollIntoView({ behavior: "smooth", block: "start" });
+    }, 300); // Espera breve para que renderice
   } catch (err) {
     console.error(err);
     Swal.fire({
@@ -253,6 +260,7 @@ const handleSubmit = async (e) => {
     });
   }
 };
+
 
 
   const getSliderColor = (value) => {
@@ -270,7 +278,7 @@ const handleSubmit = async (e) => {
   };
 
   const renderField = (campo) => {
-    const value = parseInt(form[campo.name]) || 0;
+const value = form[campo.name] !== undefined ? parseInt(form[campo.name]) : 0;
 
     if (campo.type === "autocomplete") {
       return (
@@ -393,6 +401,9 @@ if (campo.name === "Most_Used_Platform") {
           <p className="text-sm mb-1">
             Desliza para seleccionar tus horas (0 a 24):
           </p>
+          <div className="mt-2 text-center font-medium" style={{ color }}>
+            {value} {value === 1 ? "hora" : "horas"} al día
+          </div>
           <input
             type="range"
             name={campo.name}
@@ -403,9 +414,6 @@ if (campo.name === "Most_Used_Platform") {
             className="w-full"
             style={{ background: color }}
           />
-          <div className="mt-2 text-center font-medium" style={{ color }}>
-            {value} {value === 1 ? "hora" : "horas"} al día
-          </div>
         </div>
       );
     }
@@ -416,6 +424,10 @@ if (campo.name === "Most_Used_Platform") {
       return (
         <div>
           <div className="flex items-center gap-4">
+          <p className="text-sm mb-1">Desliza según los conflictos que hayas tenido (0 a 10)</p>
+          <div className="mt-2 text-center font-medium" style={{ color }}>
+           {value} | {message}
+          </div>
             <input
               type="range"
               name={campo.name}
@@ -426,12 +438,6 @@ if (campo.name === "Most_Used_Platform") {
               className="w-full"
               style={{ background: color }}
             />
-            <span className="text-base font-semibold" style={{ color }}>
-              {value}
-            </span>
-          </div>
-          <div className="mt-2 text-center font-medium" style={{ color }}>
-            {message}
           </div>
         </div>
       );
@@ -444,6 +450,9 @@ if (campo.name === "Most_Used_Platform") {
           <p className="text-sm mb-1">
             Selecciona cuántas horas duermes por noche (0 a 24):
           </p>
+          <div className="mt-2 text-center font-medium" style={{ color }}>
+            {value} {value === 1 ? "hora" : "horas"} por noche
+          </div>
           <input
             type="range"
             name={campo.name}
@@ -454,9 +463,6 @@ if (campo.name === "Most_Used_Platform") {
             className="w-full"
             style={{ background: color }}
           />
-          <div className="mt-2 text-center font-medium" style={{ color }}>
-            {value} {value === 1 ? "hora" : "horas"} por noche
-          </div>
         </div>
       );
     }

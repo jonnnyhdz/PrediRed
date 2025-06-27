@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, forwardRef } from "react";
 import { Bar } from "react-chartjs-2";
 import {
   Chart as ChartJS,
@@ -131,7 +131,7 @@ const generarTextos = (predictions, claves, contextKey = "default") => {
     });
 };
 
-export default function Predicciones({ predictions }) {
+const Predicciones = forwardRef(({ predictions }, ref) => {
   const [verExtras, setVerExtras] = useState(false);
 
   if (!predictions) return null;
@@ -152,7 +152,7 @@ export default function Predicciones({ predictions }) {
   const analisisExtras = generarTextos(predictions, clavesExtras, "extra");
 
   return (
-    <section className="predicciones">
+    <section className="predicciones" ref={ref}>
       <h3>📊 Análisis visual de tus predicciones</h3>
 
       <div className="grafica-card" style={{ maxWidth: "800px", margin: "0 auto" }}>
@@ -244,4 +244,6 @@ export default function Predicciones({ predictions }) {
       )}
     </section>
   );
-}
+});
+
+export default Predicciones;

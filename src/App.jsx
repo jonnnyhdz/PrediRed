@@ -8,15 +8,25 @@ import "./index.css";
 export default function App() {
   const [prediccionesIniciales, setPrediccionesIniciales] = useState(null);
   const [prediccionesExtras, setPrediccionesExtras] = useState([]);
-  const prediccionRef = useRef(null); // ✅ referencia para hacer scroll
+
+  const prediccionesRef = useRef(null); // 📍 referencia a predicciones iniciales
+  const prediccionRef = useRef(null);   // 📍 referencia a predicciones extras
 
   const handleNuevaPrediccion = (nueva) => {
     setPrediccionesExtras((prev) => [...prev, nueva]);
 
-    // Scroll suave hacia la sección de la nueva predicción
     setTimeout(() => {
       prediccionRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
-    }, 100); // pequeño delay para asegurar renderizado
+    }, 100);
+  };
+
+  const handlePrediccionesIniciales = (preds) => {
+    setPrediccionesIniciales(preds);
+
+    // Deslizar hacia la sección de predicciones iniciales
+    setTimeout(() => {
+      prediccionesRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+    }, 300); // ⏱ pequeño delay para asegurar renderizado
   };
 
   return (
@@ -89,16 +99,16 @@ export default function App() {
         </div>
       </section>
 
-      <Formulario onPredicciones={setPrediccionesIniciales} />
+      <Formulario onPredicciones={handlePrediccionesIniciales} />
 
       {prediccionesIniciales && (
         <>
-          <Predicciones predictions={prediccionesIniciales} />
+          <Predicciones predictions={prediccionesIniciales} ref={prediccionesRef} />
 
           {prediccionesExtras.length > 0 && (
             <PrediccionesExtras
               predicciones={prediccionesExtras}
-              ref={prediccionRef} // ✅ referencia para scroll
+              ref={prediccionRef}
             />
           )}
 
@@ -108,7 +118,7 @@ export default function App() {
                 prediccionesIniciales.Student_ID ||
                 localStorage.getItem("student_id"),
             }}
-            onNuevaPrediccion={handleNuevaPrediccion} // ✅ función con scroll
+            onNuevaPrediccion={handleNuevaPrediccion}
             prediccionRef={prediccionRef}
           />
         </>

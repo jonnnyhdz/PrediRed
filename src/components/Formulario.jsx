@@ -266,33 +266,87 @@ const validarPaso = () => {
 const handleSubmit = async (e) => {
   e.preventDefault();
 
-  // Mostrar alerta de carga
+  // Mostrar primera alerta de carga con el GIF
   Swal.fire({
     title: "Enviando respuestas...",
-    text: "Estamos generando tu predicción. Por favor espera.",
+    html: `
+      <p style="margin-bottom: 1rem;">Estamos generando tu predicción. Por favor espera.</p>
+      <img src="https://i.pinimg.com/originals/07/24/88/0724884440e8ddd0896ff557b75a222a.gif" alt="cargando" style="width: 320px;" />
+    `,
     allowOutsideClick: false,
-    didOpen: () => {
-      Swal.showLoading();
-    },
+    showConfirmButton: false,
   });
+
+  // Cambios progresivos de mensaje según el tiempo
+  const mensajesTiempo = [
+    {
+      tiempo: 5000,
+      html: `
+        <p style="margin-bottom: 1rem;">Ya casi están tus resultados, falta poco...</p>
+        <img src="https://i.pinimg.com/originals/07/24/88/0724884440e8ddd0896ff557b75a222a.gif" alt="esperando" style="width: 320px;" />
+      `,
+    },
+    {
+      tiempo: 10000,
+      html: `
+        <p style="margin-bottom: 1rem;">Estamos por terminar... solo un momento más.</p>
+        <img src="https://i.pinimg.com/originals/07/24/88/0724884440e8ddd0896ff557b75a222a.gif" alt="casi" style="width: 320px;" />
+      `,
+    },
+    {
+      tiempo: 15000,
+      html: `
+        <p style="margin-bottom: 0.5rem;">Dato curioso mientras esperas:</p>
+        <p style="font-size: 0.9rem;">📱 El 53% de los jóvenes consulta su celular antes de levantarse de la cama.</p>
+        <img src="https://i.pinimg.com/originals/07/24/88/0724884440e8ddd0896ff557b75a222a.gif" alt="dato" style="width: 320px; margin-top: 0.5rem;" />
+      `,
+    },
+        {
+      tiempo: 15000,
+      html: `
+        <p style="margin-bottom: 0.5rem;">Dato curioso mientras esperas:</p>
+        <p style="font-size: 0.9rem;">📵 El 42% de los jóvenes ha intentado reducir su tiempo en redes… y ha fallado en la primera semana.</p>
+        <img src="https://i.pinimg.com/originals/07/24/88/0724884440e8ddd0896ff557b75a222a.gif" alt="dato" style="width: 320px; margin-top: 0.5rem;" />
+      `,
+    },
+        {
+      tiempo: 15000,
+      html: `
+        <p style="margin-bottom: 0.5rem;">Dato curioso mientras esperas:</p>
+        <p style="font-size: 0.9rem;">😴 Dormir con el celular cerca puede reducir un 20% la calidad del sueño, incluso si no lo usas.</p>
+        <img src="https://i.pinimg.com/originals/07/24/88/0724884440e8ddd0896ff557b75a222a.gif" alt="dato" style="width: 320px; margin-top: 0.5rem;" />
+      `,
+    },
+  ];
+
+  const temporizadores = mensajesTiempo.map(({ tiempo, html }) =>
+    setTimeout(() => {
+      Swal.update({ html });
+    }, tiempo)
+  );
 
   try {
     const traducido = traducirCampos(form);
     const data = await enviarFormulario(traducido);
 
-    Swal.close(); // Cerrar modal de carga
+    Swal.close(); // Cierra el modal de carga
+
+    // Limpia los temporizadores para evitar que sigan corriendo
+    temporizadores.forEach(clearTimeout);
 
     // Lanzar predicciones al componente padre
     onPredicciones({ ...data.predictions, Student_ID: form.Student_ID });
 
-    // Deslizar hacia la sección de predicciones iniciales
+    // Deslizar hacia predicciones
     setTimeout(() => {
       document
         .querySelector("#predicciones-iniciales")
         ?.scrollIntoView({ behavior: "smooth", block: "start" });
-    }, 300); // Espera breve para que renderice
+    }, 300);
   } catch (err) {
     console.error(err);
+    Swal.close(); // También cerramos si falla
+
     Swal.fire({
       icon: "error",
       title: "❌ Error",

@@ -646,6 +646,9 @@ export default function Formulario({ onPredicciones }) {
         🧠 Este cuestionario consta de 9 preguntas relacionadas a tu edad, redes
         sociales y estado emocional. ¡Comencemos!
       </h2>
+      <h5 className="mb-4 text-lg font-bold">
+        Por favor responde todas las preguntas antes de envíar
+      </h5>
       {started &&
         campos.slice(0, currentStep + 1).map((campo, index) => (
           <div key={index} className="form-group mb-4 animate-fade-in">

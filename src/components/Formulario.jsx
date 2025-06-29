@@ -26,14 +26,21 @@ const opciones = {
     licenciatura: "undergraduate",
     posgrado: "graduate",
   },
-  Most_Used_Platform: {
-    facebook: "facebook",
-    instagram: "instagram",
-    tiktok: "tiktok",
-    twitter: "twitter",
-    whatsapp: "whatsapp",
-    youtube: "youtube",
-  },
+Most_Used_Platform: {
+  facebook: "facebook",
+  instagram: "instagram",
+  tiktok: "tiktok",
+  twitter: "twitter",
+  whatsapp: "whatsapp",
+  youtube: "youtube",
+  linkedin: "linkedin",
+  snapchat: "snapchat",
+  kakaotalk: "kakaotalk",
+  line: "line",
+  vkontakte: "vkontakte",
+  wechat: "wechat",
+},
+
   Relationship_Status: {
     soltero: "single",
     "en una relación": "in relationship",
@@ -191,6 +198,7 @@ const campos = [
   },
 ];
 
+
 export default function Formulario({ onPredicciones }) {
   const [form, setForm] = useState({
     Student_ID: Math.floor(Math.random() * 1000000),
@@ -222,6 +230,38 @@ const traducirCampos = (data) => {
   return traducido;
 };
 
+const validarPaso = () => {
+  const campoActual = campos[currentStep];
+
+  if (campoActual.name === "Age") {
+    const edad = parseInt(form.Age);
+    if (isNaN(edad) || edad < 1 || edad > 99) {
+      Swal.fire({
+        icon: "warning",
+        title: "Edad no válida",
+        text: "Por favor ingresa una edad entre 1 y 99.",
+      });
+      return false;
+    }
+  }
+
+  if (campoActual.name === "Country") {
+    const paisIngresado = form.Country?.toLowerCase().trim();
+    const paisValido = paises.some(
+      (pais) => pais.toLowerCase() === paisIngresado
+    );
+    if (!paisValido) {
+      Swal.fire({
+        icon: "error",
+        title: "País no válido",
+        text: "Selecciona un país de la lista sugerida.",
+      });
+      return false;
+    }
+  }
+
+  return true;
+};
 
 const handleSubmit = async (e) => {
   e.preventDefault();
@@ -504,13 +544,16 @@ if (campo.name === "Most_Used_Platform") {
       ) : (
         <>
           {currentStep < campos.length - 1 && (
-            <button
-              type="button"
-              onClick={() => setCurrentStep(currentStep + 1)}
-              className="btn"
-            >
-              Siguiente
-            </button>
+<button
+  type="button"
+  onClick={() => {
+    if (validarPaso()) setCurrentStep(currentStep + 1);
+  }}
+  className="btn"
+>
+  Siguiente
+</button>
+
           )}
           {currentStep === campos.length - 1 && (
             <button type="submit" className="btn">

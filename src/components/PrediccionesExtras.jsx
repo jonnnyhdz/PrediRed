@@ -22,16 +22,16 @@ const frasesHumanas = {
   Relationship_Status: 'estado de relación'
 };
 
-function evaluar(valor, promedio) {
-  if (valor > promedio + 1) return 'por encima de lo esperado';
-  if (valor < promedio - 1) return 'por debajo de lo esperado';
-  return 'dentro de un rango saludable';
-}
-
 function generarFrase(target, valor, promedio) {
+  if (typeof valor !== 'number' || typeof promedio !== 'number') return 'Resultado no disponible.';
   const concepto = frasesHumanas[target] || 'tu resultado';
-  const evaluacion = evaluar(valor, promedio);
-  return `Tus ${concepto} es de ${valor}, mientras que el promedio general es de ${promedio}. Estás ${evaluacion}.`;
+  const evaluacion =
+    valor > promedio + 1
+      ? 'por encima de lo esperado'
+      : valor < promedio - 1
+      ? 'por debajo de lo esperado'
+      : 'dentro de un rango saludable';
+  return `Tu ${concepto} es de ${valor}, mientras que el promedio general es de ${promedio}. Estás ${evaluacion}.`;
 }
 
 function generarDatos(valor, promedio) {
@@ -51,51 +51,79 @@ function generarDatos(valor, promedio) {
 const PrediccionesExtras = forwardRef(({ predicciones }, ref) => {
   if (!predicciones || predicciones.length === 0) return null;
 
-  const ultima = predicciones[predicciones.length - 1];
-  const { target, valor_usuario, promedio_general } = ultima;
+  const ultimaPregunta = predicciones[predicciones.length - 1];
 
-  if (
-    !target ||
-    typeof valor_usuario !== 'number' ||
-    typeof promedio_general !== 'number'
-  ) {
-    console.warn('❌ Predicción inválida descartada:', ultima);
-    return null;
-  }
-
-  const frase = generarFrase(target, valor_usuario, promedio_general);
-  const data = generarDatos(valor_usuario, promedio_general);
+  if (!ultimaPregunta || !ultimaPregunta.resultados) return null;
 
   return (
     <section className="predicciones" ref={ref}>
-      <h3>💡 Predicción reciente</h3>
-      <div className="predicciones-grid">
-        <div className="grafica-card">
-          <div style={{ height: '240px' }}>
-            <Bar
-              data={data}
-              options={{
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: {
-                  legend: { display: false },
-                  title: {
-                    display: true,
-                    text: frasesHumanas[target] || 'Resultado',
-                    font: { size: 16 }
-                  }
-                },
-                scales: {
-                  y: {
-                    beginAtZero: true,
-                    suggestedMax: Math.max(valor_usuario, promedio_general) + 2
-                  }
-                }
-              }}
-            />
-          </div>
-          <p style={{ marginTop: '10px', fontSize: '0.95rem' }}>{frase}</p>
+      {/* ✅ Banner informativo con ícono ℹ️ */}
+      <div style={{
+        backgroundColor: '#f1f5f9',
+        borderLeft: '4px solid #1d3557',
+        padding: '12px 16px',
+        marginBottom: '20px',
+        borderRadius: '6px',
+        color: '#1d3557',
+        fontSize: '0.95rem',
+        boxShadow: '0 2px 4px rgba(0,0,0,0.05)'
+      }}>
+        ℹ️ <strong>Comparación con el promedio general:</strong> Tus resultados se comparan con el promedio de respuestas recolectadas de otros estudiantes para ayudarte a saber si estás por encima, por debajo o en un rango saludable.
+      </div>
+
+      <h3>🔍 Respuesta a: "{ultimaPregunta.pregunta_original}"</h3>
+
+      {ultimaPregunta.respuesta_final && (
+        <div className="respuesta-final">
+          <h4 style={{ margin: '12px 0 20px', fontSize: '1.05rem', color: '#1d3557' }}>
+            🧠 Conclusión: {ultimaPregunta.respuesta_final}
+          </h4>
         </div>
+      )}
+
+      <div className="predicciones-grid">
+        {ultimaPregunta.resultados.map((res, index) => {
+          const { target, valor_usuario, promedio_general } = res;
+          if (
+            !target ||
+            typeof valor_usuario !== 'number' ||
+            typeof promedio_general !== 'number'
+          ) {
+            return null;
+          }
+
+          const frase = generarFrase(target, valor_usuario, promedio_general);
+          const data = generarDatos(valor_usuario, promedio_general);
+
+          return (
+            <div className="grafica-card" key={index}>
+              <div style={{ height: '240px' }}>
+                <Bar
+                  data={data}
+                  options={{
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                      legend: { display: false },
+                      title: {
+                        display: true,
+                        text: frasesHumanas[target] || 'Resultado',
+                        font: { size: 16 }
+                      }
+                    },
+                    scales: {
+                      y: {
+                        beginAtZero: true,
+                        suggestedMax: Math.max(valor_usuario, promedio_general) + 2
+                      }
+                    }
+                  }}
+                />
+              </div>
+              <p style={{ marginTop: '10px', fontSize: '0.95rem' }}>{frase}</p>
+            </div>
+          );
+        })}
       </div>
     </section>
   );

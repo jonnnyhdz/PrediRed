@@ -12,11 +12,9 @@ import {
   FaLine,
   FaVk,
   FaWeixin,
-  FaComments
+  FaComments,
 } from "react-icons/fa";
 import Swal from "sweetalert2";
-
-
 
 const opciones = {
   Gender: { masculino: "male", femenino: "female" },
@@ -26,20 +24,20 @@ const opciones = {
     licenciatura: "undergraduate",
     posgrado: "graduate",
   },
-Most_Used_Platform: {
-  facebook: "facebook",
-  instagram: "instagram",
-  tiktok: "tiktok",
-  twitter: "twitter",
-  whatsapp: "whatsapp",
-  youtube: "youtube",
-  linkedin: "linkedin",
-  snapchat: "snapchat",
-  kakaotalk: "kakaotalk",
-  line: "line",
-  vkontakte: "vkontakte",
-  wechat: "wechat",
-},
+  Most_Used_Platform: {
+    facebook: "facebook",
+    instagram: "instagram",
+    tiktok: "tiktok",
+    twitter: "twitter",
+    whatsapp: "whatsapp",
+    youtube: "youtube",
+    linkedin: "linkedin",
+    snapchat: "snapchat",
+    kakaotalk: "kakaotalk",
+    line: "line",
+    vkontakte: "vkontakte",
+    wechat: "wechat",
+  },
 
   Relationship_Status: {
     soltero: "single",
@@ -156,7 +154,12 @@ const paises = [
 
 const campos = [
   { name: "Age", label: "¿Cúal es tú edad?", type: "number" },
-  { name: "Country", label: "¿De qué país eres?", type: "autocomplete", options: paises },
+  {
+    name: "Country",
+    label: "¿De qué país eres?",
+    type: "autocomplete",
+    options: paises,
+  },
   {
     name: "Avg_Daily_Usage_Hours",
     label: "¿Cuantas horas pasas al día en redes sociales?",
@@ -198,7 +201,6 @@ const campos = [
   },
 ];
 
-
 export default function Formulario({ onPredicciones }) {
   const [form, setForm] = useState({
     Student_ID: Math.floor(Math.random() * 1000000),
@@ -212,150 +214,160 @@ export default function Formulario({ onPredicciones }) {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
-const traducirCampos = (data) => {
-  const traducido = { ...data };
+  const traducirCampos = (data) => {
+    const traducido = { ...data };
 
-  // Traducciones de texto
-  traducido.Gender = opciones.Gender[data.Gender];
-  traducido.Academic_Level = opciones.Academic_Level[data.Academic_Level];
-  traducido.Most_Used_Platform = opciones.Most_Used_Platform[data.Most_Used_Platform];
-  traducido.Relationship_Status = opciones.Relationship_Status[data.Relationship_Status];
+    // Traducciones de texto
+    traducido.Gender = opciones.Gender[data.Gender];
+    traducido.Academic_Level = opciones.Academic_Level[data.Academic_Level];
+    traducido.Most_Used_Platform =
+      opciones.Most_Used_Platform[data.Most_Used_Platform];
+    traducido.Relationship_Status =
+      opciones.Relationship_Status[data.Relationship_Status];
 
-  // Conversión de strings a números
-  traducido.Age = parseInt(data.Age);
-  traducido.Avg_Daily_Usage_Hours = parseFloat(data.Avg_Daily_Usage_Hours);
-  traducido.Sleep_Hours_Per_Night = parseFloat(data.Sleep_Hours_Per_Night);
-  traducido.Conflicts_Over_Social_Media = parseInt(data.Conflicts_Over_Social_Media);
-
-  return traducido;
-};
-
-const validarPaso = () => {
-  const campoActual = campos[currentStep];
-
-  if (campoActual.name === "Age") {
-    const edad = parseInt(form.Age);
-    if (isNaN(edad) || edad < 1 || edad > 99) {
-      Swal.fire({
-        icon: "warning",
-        title: "Edad no válida",
-        text: "Por favor ingresa una edad entre 1 y 99.",
-      });
-      return false;
-    }
-  }
-
-  if (campoActual.name === "Country") {
-    const paisIngresado = form.Country?.toLowerCase().trim();
-    const paisValido = paises.some(
-      (pais) => pais.toLowerCase() === paisIngresado
+    // Conversión de strings a números
+    traducido.Age = parseInt(data.Age);
+    traducido.Avg_Daily_Usage_Hours = parseFloat(data.Avg_Daily_Usage_Hours);
+    traducido.Sleep_Hours_Per_Night = parseFloat(data.Sleep_Hours_Per_Night);
+    traducido.Conflicts_Over_Social_Media = parseInt(
+      data.Conflicts_Over_Social_Media
     );
-    if (!paisValido) {
-      Swal.fire({
-        icon: "error",
-        title: "País no válido",
-        text: "Selecciona un país de la lista sugerida.",
-      });
-      return false;
+
+    return traducido;
+  };
+
+  const validarPaso = () => {
+    const campoActual = campos[currentStep];
+
+    if (campoActual.name === "Age") {
+      const edad = parseInt(form.Age);
+      if (isNaN(edad) || edad < 1 || edad > 99) {
+        Swal.fire({
+          icon: "warning",
+          title: "Edad no válida",
+          text: "Por favor ingresa una edad entre 1 y 99.",
+        });
+        return false;
+      }
     }
-  }
 
-  return true;
-};
+    if (campoActual.name === "Country") {
+      const normalizar = (texto) =>
+        texto
+          .toLowerCase()
+          .normalize("NFD")
+          .replace(/[\u0300-\u036f]/g, "")
+          .trim();
 
-const handleSubmit = async (e) => {
-  e.preventDefault();
+      const paisIngresado = normalizar(form.Country || "");
+      const paisValido = paises.some(
+        (pais) => normalizar(pais) === paisIngresado
+      );
 
-  // Mostrar primera alerta de carga con el GIF
-  Swal.fire({
-    title: "Enviando respuestas...",
-    html: `
+      if (!paisValido) {
+        Swal.fire({
+          icon: "error",
+          title: "País no válido",
+          text: "Selecciona un país de la lista sugerida.",
+        });
+        return false;
+      }
+    }
+
+    return true;
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    // Mostrar primera alerta de carga con el GIF
+    Swal.fire({
+      title: "Enviando respuestas...",
+      html: `
       <p style="margin-bottom: 1rem;">Estamos generando tu predicción. Por favor espera.</p>
       <img src="https://i.pinimg.com/originals/07/24/88/0724884440e8ddd0896ff557b75a222a.gif" alt="cargando" style="width: 320px;" />
     `,
-    allowOutsideClick: false,
-    showConfirmButton: false,
-  });
+      allowOutsideClick: false,
+      showConfirmButton: false,
+    });
 
-  // Cambios progresivos de mensaje según el tiempo
-  const mensajesTiempo = [
-    {
-      tiempo: 5000,
-      html: `
+    // Cambios progresivos de mensaje según el tiempo
+    const mensajesTiempo = [
+      {
+        tiempo: 5000,
+        html: `
         <p style="margin-bottom: 1rem;">Ya casi están tus resultados, falta poco...</p>
         <img src="https://i.pinimg.com/originals/07/24/88/0724884440e8ddd0896ff557b75a222a.gif" alt="esperando" style="width: 320px;" />
       `,
-    },
-    {
-      tiempo: 10000,
-      html: `
+      },
+      {
+        tiempo: 10000,
+        html: `
         <p style="margin-bottom: 1rem;">Estamos por terminar... solo un momento más.</p>
         <img src="https://i.pinimg.com/originals/07/24/88/0724884440e8ddd0896ff557b75a222a.gif" alt="casi" style="width: 320px;" />
       `,
-    },
-    {
-      tiempo: 15000,
-      html: `
+      },
+      {
+        tiempo: 15000,
+        html: `
         <p style="margin-bottom: 0.5rem;">Dato curioso mientras esperas:</p>
         <p style="font-size: 0.9rem;">📱 El 53% de los jóvenes consulta su celular antes de levantarse de la cama.</p>
         <img src="https://i.pinimg.com/originals/07/24/88/0724884440e8ddd0896ff557b75a222a.gif" alt="dato" style="width: 320px; margin-top: 0.5rem;" />
       `,
-    },
-        {
-      tiempo: 15000,
-      html: `
+      },
+      {
+        tiempo: 15000,
+        html: `
         <p style="margin-bottom: 0.5rem;">Dato curioso mientras esperas:</p>
         <p style="font-size: 0.9rem;">📵 El 42% de los jóvenes ha intentado reducir su tiempo en redes… y ha fallado en la primera semana.</p>
         <img src="https://i.pinimg.com/originals/07/24/88/0724884440e8ddd0896ff557b75a222a.gif" alt="dato" style="width: 320px; margin-top: 0.5rem;" />
       `,
-    },
-        {
-      tiempo: 15000,
-      html: `
+      },
+      {
+        tiempo: 15000,
+        html: `
         <p style="margin-bottom: 0.5rem;">Dato curioso mientras esperas:</p>
         <p style="font-size: 0.9rem;">😴 Dormir con el celular cerca puede reducir un 20% la calidad del sueño, incluso si no lo usas.</p>
         <img src="https://i.pinimg.com/originals/07/24/88/0724884440e8ddd0896ff557b75a222a.gif" alt="dato" style="width: 320px; margin-top: 0.5rem;" />
       `,
-    },
-  ];
+      },
+    ];
 
-  const temporizadores = mensajesTiempo.map(({ tiempo, html }) =>
-    setTimeout(() => {
-      Swal.update({ html });
-    }, tiempo)
-  );
+    const temporizadores = mensajesTiempo.map(({ tiempo, html }) =>
+      setTimeout(() => {
+        Swal.update({ html });
+      }, tiempo)
+    );
 
-  try {
-    const traducido = traducirCampos(form);
-    const data = await enviarFormulario(traducido);
+    try {
+      const traducido = traducirCampos(form);
+      const data = await enviarFormulario(traducido);
 
-    Swal.close(); // Cierra el modal de carga
+      Swal.close(); // Cierra el modal de carga
 
-    // Limpia los temporizadores para evitar que sigan corriendo
-    temporizadores.forEach(clearTimeout);
+      // Limpia los temporizadores para evitar que sigan corriendo
+      temporizadores.forEach(clearTimeout);
 
-    // Lanzar predicciones al componente padre
-    onPredicciones({ ...data.predictions, Student_ID: form.Student_ID });
+      // Lanzar predicciones al componente padre
+      onPredicciones({ ...data.predictions, Student_ID: form.Student_ID });
 
-    // Deslizar hacia predicciones
-    setTimeout(() => {
-      document
-        .querySelector("#predicciones-iniciales")
-        ?.scrollIntoView({ behavior: "smooth", block: "start" });
-    }, 300);
-  } catch (err) {
-    console.error(err);
-    Swal.close(); // También cerramos si falla
+      // Deslizar hacia predicciones
+      setTimeout(() => {
+        document
+          .querySelector("#predicciones-iniciales")
+          ?.scrollIntoView({ behavior: "smooth", block: "start" });
+      }, 300);
+    } catch (err) {
+      console.error(err);
+      Swal.close(); // También cerramos si falla
 
-    Swal.fire({
-      icon: "error",
-      title: "❌ Error",
-      text: "Ocurrió un error al obtener predicciones.",
-    });
-  }
-};
-
-
+      Swal.fire({
+        icon: "error",
+        title: "❌ Error",
+        text: "Ocurrió un error al obtener predicciones.",
+      });
+    }
+  };
 
   const getSliderColor = (value) => {
     if (value >= 17) return "#e63946";
@@ -372,7 +384,8 @@ const handleSubmit = async (e) => {
   };
 
   const renderField = (campo) => {
-const value = form[campo.name] !== undefined ? parseInt(form[campo.name]) : 0;
+    const value =
+      form[campo.name] !== undefined ? parseInt(form[campo.name]) : 0;
 
     if (campo.type === "autocomplete") {
       return (
@@ -414,61 +427,109 @@ const value = form[campo.name] !== undefined ? parseInt(form[campo.name]) : 0;
       );
     }
 
-if (campo.name === "Most_Used_Platform") {
-  const allPlatforms = [
-    { value: "instagram", label: "Instagram", icon: <FaInstagram style={{ color: "#E1306C" }} /> },
-    { value: "facebook", label: "Facebook", icon: <FaFacebook style={{ color: "#1877F2" }} /> },
-    { value: "tiktok", label: "TikTok", icon: <FaTiktok style={{ color: "#000000" }} /> },
-    { value: "whatsapp", label: "WhatsApp", icon: <FaWhatsapp style={{ color: "#25D366" }} /> },
-    { value: "youtube", label: "YouTube", icon: <FaYoutube style={{ color: "#FF0000" }} /> },
-    { value: "linkedin", label: "LinkedIn", icon: <FaLinkedin style={{ color: "#0A66C2" }} /> },
-    { value: "twitter", label: "Twitter", icon: <FaTwitter style={{ color: "#1DA1F2" }} /> },
-    { value: "snapchat", label: "Snapchat", icon: <FaSnapchat style={{ color: "#FFFC00" }} /> },
-    { value: "kakaotalk", label: "KakaoTalk", icon: <FaComments style={{ color: "#FAE100" }} /> },
-    { value: "line", label: "LINE", icon: <FaLine style={{ color: "#00C300" }} /> },
-    { value: "vkontakte", label: "VKontakte", icon: <FaVk style={{ color: "#4C75A3" }} /> },
-    { value: "wechat", label: "WeChat", icon: <FaWeixin style={{ color: "#09B83E" }} /> },
-  ];
+    if (campo.name === "Most_Used_Platform") {
+      const allPlatforms = [
+        {
+          value: "instagram",
+          label: "Instagram",
+          icon: <FaInstagram style={{ color: "#E1306C" }} />,
+        },
+        {
+          value: "facebook",
+          label: "Facebook",
+          icon: <FaFacebook style={{ color: "#1877F2" }} />,
+        },
+        {
+          value: "tiktok",
+          label: "TikTok",
+          icon: <FaTiktok style={{ color: "#000000" }} />,
+        },
+        {
+          value: "whatsapp",
+          label: "WhatsApp",
+          icon: <FaWhatsapp style={{ color: "#25D366" }} />,
+        },
+        {
+          value: "youtube",
+          label: "YouTube",
+          icon: <FaYoutube style={{ color: "#FF0000" }} />,
+        },
+        {
+          value: "linkedin",
+          label: "LinkedIn",
+          icon: <FaLinkedin style={{ color: "#0A66C2" }} />,
+        },
+        {
+          value: "twitter",
+          label: "Twitter",
+          icon: <FaTwitter style={{ color: "#1DA1F2" }} />,
+        },
+        {
+          value: "snapchat",
+          label: "Snapchat",
+          icon: <FaSnapchat style={{ color: "#FFFC00" }} />,
+        },
+        {
+          value: "kakaotalk",
+          label: "KakaoTalk",
+          icon: <FaComments style={{ color: "#FAE100" }} />,
+        },
+        {
+          value: "line",
+          label: "LINE",
+          icon: <FaLine style={{ color: "#00C300" }} />,
+        },
+        {
+          value: "vkontakte",
+          label: "VKontakte",
+          icon: <FaVk style={{ color: "#4C75A3" }} />,
+        },
+        {
+          value: "wechat",
+          label: "WeChat",
+          icon: <FaWeixin style={{ color: "#09B83E" }} />,
+        },
+      ];
 
-  const seleccionada = allPlatforms.find(p => p.value === form[campo.name]);
+      const seleccionada = allPlatforms.find(
+        (p) => p.value === form[campo.name]
+      );
 
-  if (seleccionada) {
-    return (
-      <div className="flex flex-col items-center gap-2">
-        <div className="platform-card selected">
-          <div className="platform-icon">{seleccionada.icon}</div>
-          <div className="platform-label">{seleccionada.label}</div>
+      if (seleccionada) {
+        return (
+          <div className="flex flex-col items-center gap-2">
+            <div className="platform-card selected">
+              <div className="platform-icon">{seleccionada.icon}</div>
+              <div className="platform-label">{seleccionada.label}</div>
+            </div>
+            <button
+              type="button"
+              onClick={() => setForm({ ...form, [campo.name]: "" })}
+              className="change-btn"
+            >
+              Cambiar red social
+            </button>
+          </div>
+        );
+      }
+
+      return (
+        <div className="platform-grid">
+          {allPlatforms.map((plataforma) => (
+            <div
+              key={plataforma.value}
+              className="platform-card"
+              onClick={() =>
+                setForm({ ...form, [campo.name]: plataforma.value })
+              }
+            >
+              <div className="platform-icon">{plataforma.icon}</div>
+              <div className="platform-label">{plataforma.label}</div>
+            </div>
+          ))}
         </div>
-        <button
-          type="button"
-          onClick={() => setForm({ ...form, [campo.name]: "" })}
-          className="change-btn"
-        >
-          Cambiar red social
-        </button>
-      </div>
-    );
-  }
-
-  return (
-    <div className="platform-grid">
-      {allPlatforms.map((plataforma) => (
-        <div
-          key={plataforma.value}
-          className="platform-card"
-          onClick={() =>
-            setForm({ ...form, [campo.name]: plataforma.value })
-          }
-        >
-          <div className="platform-icon">{plataforma.icon}</div>
-          <div className="platform-label">{plataforma.label}</div>
-        </div>
-      ))}
-    </div>
-  );
-}
-
-
+      );
+    }
 
     if (campo.type === "select") {
       return (
@@ -518,10 +579,12 @@ if (campo.name === "Most_Used_Platform") {
       return (
         <div>
           <div className="flex items-center gap-4">
-          <p className="text-sm mb-1">Desliza según los conflictos que hayas tenido (0 a 10)</p>
-          <div className="mt-2 text-center font-medium" style={{ color }}>
-           {value} | {message}
-          </div>
+            <p className="text-sm mb-1">
+              Desliza según los conflictos que hayas tenido (0 a 10)
+            </p>
+            <div className="mt-2 text-center font-medium" style={{ color }}>
+              {value} | {message}
+            </div>
             <input
               type="range"
               name={campo.name}
@@ -561,7 +624,6 @@ if (campo.name === "Most_Used_Platform") {
       );
     }
 
-
     return (
       <input
         type={campo.type}
@@ -598,16 +660,15 @@ if (campo.name === "Most_Used_Platform") {
       ) : (
         <>
           {currentStep < campos.length - 1 && (
-<button
-  type="button"
-  onClick={() => {
-    if (validarPaso()) setCurrentStep(currentStep + 1);
-  }}
-  className="btn"
->
-  Siguiente
-</button>
-
+            <button
+              type="button"
+              onClick={() => {
+                if (validarPaso()) setCurrentStep(currentStep + 1);
+              }}
+              className="btn"
+            >
+              Siguiente
+            </button>
           )}
           {currentStep === campos.length - 1 && (
             <button type="submit" className="btn">

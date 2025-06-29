@@ -169,19 +169,16 @@ body {
 
 /* Botón de cambiar red social */
 .change-btn {
-  font-size: 14px;
-  color: #1d3557;
-  background: none;
-  border: none;
-  margin-top: 12px;
+  text-decoration: none;
+  color: #00eaff;
+  font-weight: 500;
   cursor: pointer;
-  text-decoration: underline;
-  transition: color 0.3s ease;
 }
 
 .change-btn:hover {
-  color: #0c243b;
+  text-decoration: underline;
 }
+
 
 /* === Animaciones === */
 @keyframes zoomInFade {
@@ -295,22 +292,34 @@ body {
 
 /* Botón CTA mejorado */
 .cta-button {
+  display: inline-block;
   background: linear-gradient(145deg, #ff5e62, #ff9966);
-  color: white;
-  padding: 14px 30px;
-  font-size: 17px;
+  color: #fff;
+  font-size: 1.1rem;
   font-weight: 600;
-  border-radius: 50px;
+  padding: 0.75rem 1.5rem;
+  border: none;
+  border-radius: 999px;
+  text-align: center;
   text-decoration: none;
   transition: all 0.3s ease;
-  box-shadow: 0 6px 18px rgba(255, 94, 98, 0.5);
-  border: none;
+  max-width: 90%;
+  box-sizing: border-box;
 }
 
 .cta-button:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 8px 24px rgba(255, 94, 98, 0.6);
+  transform: scale(1.05);
+  box-shadow: 0 0 10px rgba(255, 255, 255, 0.4);
 }
+
+/* Responsivo */
+@media (max-width: 480px) {
+  .cta-button {
+    font-size: 1rem;
+    padding: 0.7rem 1.2rem;
+  }
+}
+
 
 /* Animación suave al cargar */
 @keyframes fadeSlideIn {

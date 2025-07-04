@@ -3,30 +3,33 @@ import Formulario from "./components/Formulario";
 import Predicciones from "./components/Predicciones";
 import PreguntaForm from "./components/PreguntaForm";
 import PrediccionesExtras from "./components/PrediccionesExtras";
+import ModelVisualizer from "./components/ModelVisualizer"; // ✅ Nuevo
 import "./index.css";
 
 export default function App() {
   const [prediccionesIniciales, setPrediccionesIniciales] = useState(null);
   const [prediccionesExtras, setPrediccionesExtras] = useState([]);
 
-  const prediccionesRef = useRef(null); // 📍 referencia a predicciones iniciales
-  const prediccionRef = useRef(null);   // 📍 referencia a predicciones extras
+  const prediccionesRef = useRef(null);
+  const prediccionRef = useRef(null);
+  const modelosRef = useRef(null);
 
   const handleNuevaPrediccion = (nueva) => {
     setPrediccionesExtras((prev) => [...prev, nueva]);
-
     setTimeout(() => {
       prediccionRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
     }, 100);
   };
 
   const handlePrediccionesIniciales = (preds) => {
+    console.log("📦 prediccionesIniciales:", preds);
+    if (!preds.predictions) {
+      console.warn("⚠️ El backend no envió `predictions`, usando objeto plano.");
+    }
     setPrediccionesIniciales(preds);
-
-    // Deslizar hacia la sección de predicciones iniciales
     setTimeout(() => {
       prediccionesRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
-    }, 300); // ⏱ pequeño delay para asegurar renderizado
+    }, 300);
   };
 
   return (
@@ -103,7 +106,19 @@ export default function App() {
 
       {prediccionesIniciales && (
         <>
-          <Predicciones predictions={prediccionesIniciales} ref={prediccionesRef} />
+          <Predicciones
+            predictions={prediccionesIniciales.predictions || prediccionesIniciales}
+            variables_por_modelo={prediccionesIniciales.variables_por_modelo || {}}
+            ref={prediccionesRef}
+          />
+
+          {/* ✅ Nuevo: Visualización de modelos */}
+<ModelVisualizer
+  predictions={prediccionesIniciales.predictions}
+  userData={prediccionesIniciales.userData}
+  variables_por_modelo={prediccionesIniciales.variables_por_modelo}
+/>
+
 
           {prediccionesExtras.length > 0 && (
             <PrediccionesExtras

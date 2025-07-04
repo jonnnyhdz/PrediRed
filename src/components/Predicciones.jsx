@@ -165,7 +165,12 @@ const generarData = (predictions, claves) => {
   };
 };
 
-const generarTextos = (predictions, claves, contextKey = "default") => {
+const generarTextos = (
+  predictions,
+  claves,
+  contextKey = "default",
+  variables_por_modelo = {}
+) => {
   return claves
     .filter(
       (key) => typeof predictions[key] === "number" && key !== "Student_ID"
@@ -173,291 +178,362 @@ const generarTextos = (predictions, claves, contextKey = "default") => {
     .map((key, index) => {
       const porcentaje = parseFloat((predictions[key] * 10).toFixed(1));
       const { icon, texto } = generarAnalisis(key, porcentaje);
+      const usadas = variables_por_modelo[key] || [];
+
       return {
         id: `${contextKey}-${key}-${porcentaje}-${index}`,
         icon,
         texto,
+        usadas,
       };
     });
 };
 
-const Predicciones = forwardRef(({ predictions }, ref) => {
-  const [extraSeleccionada, setExtraSeleccionada] = useState(null);
+const Predicciones = forwardRef(
+  ({ predictions, variables_por_modelo = {} }, ref) => {
+    console.log("🔍 Variables por modelo:", variables_por_modelo);
+    const [extraSeleccionada, setExtraSeleccionada] = useState(null);
 
-  const botonesExtras = [
-    {
-      key: "Avg_Daily_Usage_Hours",
-      label: "Análisis de horas en redes",
-      icon: <FaMobileAlt style={{ color: "#ffffff", fontSize: "1.2rem" }} />,
-      gradient: "linear-gradient(to right,rgb(241, 107, 17),rgb(253, 220, 90))", // rojo → amarillo
-    },
-    {
-      key: "Sleep_Hours_Per_Night",
-      label: "Calidad de sueño",
-      icon: <FaBed style={{ color: "#ffffff", fontSize: "1.2rem" }} />,
-      gradient: "linear-gradient(to right, #2193b0, #6dd5ed)", // azul claro
-    },
-    {
-      key: "Relationship_Status",
-      label: "Estado sentimental",
-      icon: <FaHeart style={{ color: "#ffffff", fontSize: "1.2rem" }} />,
-      gradient: "linear-gradient(to right, #ff416c, #ff4b2b)", // rosa → rojo intenso
-    },
-  ];
+    const botonesExtras = [
+      {
+        key: "Avg_Daily_Usage_Hours",
+        label: "Análisis de horas en redes",
+        icon: <FaMobileAlt style={{ color: "#ffffff", fontSize: "1.2rem" }} />,
+        gradient:
+          "linear-gradient(to right,rgb(241, 107, 17),rgb(253, 220, 90))", // rojo → amarillo
+      },
+      {
+        key: "Sleep_Hours_Per_Night",
+        label: "Calidad de sueño",
+        icon: <FaBed style={{ color: "#ffffff", fontSize: "1.2rem" }} />,
+        gradient: "linear-gradient(to right, #2193b0, #6dd5ed)", // azul claro
+      },
+      {
+        key: "Relationship_Status",
+        label: "Estado sentimental",
+        icon: <FaHeart style={{ color: "#ffffff", fontSize: "1.2rem" }} />,
+        gradient: "linear-gradient(to right, #ff416c, #ff4b2b)", // rosa → rojo intenso
+      },
+    ];
 
-  if (!predictions) return null;
+    if (!predictions) return null;
 
-  const clavesIniciales = ["Mental_Health_Score", "Addicted_Score"];
-  const claveAcademica = "Affects_Academic_Performance";
+    const clavesIniciales = ["Mental_Health_Score", "Addicted_Score"];
+    const claveAcademica = "Affects_Academic_Performance";
 
-  const clavesExtras = Object.keys(predictions).filter(
-    (k) =>
-      !clavesIniciales.includes(k) && k !== "Student_ID" && k !== claveAcademica
-  );
+    const clavesExtras = Object.keys(predictions).filter(
+      (k) =>
+        !clavesIniciales.includes(k) &&
+        k !== "Student_ID" &&
+        k !== claveAcademica
+    );
 
-  const data = generarData(predictions, clavesIniciales);
-  const analisis = generarTextos(predictions, clavesIniciales, "principal");
-  const analisisAcademico = generarTextos(
-    predictions,
-    [claveAcademica],
-    "academico"
-  );
-  const analisisExtraSeleccionada = extraSeleccionada
-    ? generarTextos(predictions, [extraSeleccionada], "extra")
-    : [];
+    const data = generarData(predictions, clavesIniciales);
+    const analisis = generarTextos(
+      predictions,
+      clavesIniciales,
+      "principal",
+      variables_por_modelo
+    );
+    const analisisAcademico = generarTextos(
+      predictions,
+      [claveAcademica],
+      "academico",
+      variables_por_modelo
+    );
+    const analisisExtraSeleccionada = extraSeleccionada
+      ? generarTextos(
+          predictions,
+          [extraSeleccionada],
+          "extra",
+          variables_por_modelo
+        )
+      : [];
 
-  return (
-    <section className="predicciones" ref={ref}>
-      <h3 style={{ marginBottom: "1rem" }}>
-        📊 Análisis visual de tus predicciones
-      </h3>
+    return (
+      <section className="predicciones" ref={ref}>
+        <h3 style={{ marginBottom: "1rem" }}>
+          📊 Análisis visual de tus predicciones
+        </h3>
 
-      <div
-        className="grafica-card"
-        style={{ maxWidth: "800px", margin: "0 auto" }}
-      >
-        <Bar
-          data={data}
-          options={{
-            indexAxis: "y",
-            responsive: true,
-            plugins: {
-              legend: { display: false },
-              title: {
-                display: true,
-                text: "Resultados principales (escala 1-10)",
-              },
-              tooltip: {
-                callbacks: {
-                  label: (context) => `${context.parsed.x}%`,
-                },
-              },
-            },
-            scales: {
-              x: {
-                min: 0,
-                max: 100,
-                ticks: {
-                  callback: (value) => `${value}%`,
-                },
-              },
-            },
-          }}
-        />
-      </div>
-
-      <div className="banners-analisis" style={{ marginTop: "1.5rem" }}>
-        {analisis.map(({ id, icon, texto }) => {
-          let borderColor = "#cde4f2";
-          if (icon?.type === FaCheckCircle) borderColor = "#2a9d8f";
-          if (icon?.type === FaExclamationTriangle) borderColor = "#f4a261";
-          if (icon?.type === FaTimesCircle) borderColor = "#e76f51";
-
-          return (
-            <div
-              key={id}
-              style={{
-                display: "flex",
-                alignItems: "center",
-                gap: "1rem",
-                background: "#f9f9f9",
-                border: `2px solid ${borderColor}`,
-                borderRadius: "10px",
-                padding: "1rem",
-                marginBottom: "1rem",
-                maxWidth: "800px",
-                marginLeft: "auto",
-                marginRight: "auto",
-                boxShadow: "0 2px 6px rgba(0,0,0,0.05)",
-              }}
-            >
-              {icon}
-              <span style={{ color: "#333" }}>{texto}</span>
-            </div>
-          );
-        })}
-      </div>
-
-      {analisisAcademico.length > 0 && (
         <div
-          style={{
-            display: "flex",
-            alignItems: "center",
-            gap: "1rem",
-            background: "#eef6fb",
-            border: "1px solid #cde4f2",
-            borderRadius: "10px",
-            padding: "1rem",
-            marginTop: "2rem",
-            maxWidth: "800px",
-            marginLeft: "auto",
-            marginRight: "auto",
-            boxShadow: "0 2px 6px rgba(0,0,0,0.05)",
-          }}
+          className="grafica-card"
+          style={{ maxWidth: "800px", margin: "0 auto" }}
         >
-          <FaInfoCircle color="#0077b6" size={28} />
-          <div>
-            <strong style={{ color: "#0077b6" }}>
-              Evaluación de tu rendimiento académico
-            </strong>
-            <p style={{ margin: "0.3rem 0", color: "#333" }}>
-              {analisisAcademico[0].texto}
-            </p>
-          </div>
-        </div>
-      )}
-
-      {clavesExtras.length > 0 && (
-        <div style={{ marginTop: "2rem", textAlign: "center" }}>
-          <p style={{ marginBottom: "1rem", color: "#333" }}>
-            Para ver más predicciones, selecciona la de tu preferencia:
-          </p>
-          <div
-            style={{
-              display: "flex",
-              justifyContent: "center",
-              gap: "1rem",
-              flexWrap: "wrap",
+          <Bar
+            data={data}
+            options={{
+              indexAxis: "y",
+              responsive: true,
+              plugins: {
+                legend: { display: false },
+                title: {
+                  display: true,
+                  text: "Resultados principales (escala 1-10)",
+                },
+                tooltip: {
+                  callbacks: {
+                    label: (context) => `${context.parsed.x}%`,
+                  },
+                },
+              },
+              scales: {
+                x: {
+                  min: 0,
+                  max: 100,
+                  ticks: {
+                    callback: (value) => `${value}%`,
+                  },
+                },
+              },
             }}
-          >
-            <div className="extra-buttons-container">
-              {botonesExtras.map((btn) => (
-                <button
-                  key={btn.key}
-                  onClick={() => setExtraSeleccionada(btn.key)}
-                  className="btn-extra"
-                  style={{ background: btn.gradient }}
-                >
-                  <span className="icon">{btn.icon}</span>
-                  <span className="text">{btn.label}</span>
-                </button>
-              ))}
-            </div>
-          </div>
+          />
         </div>
-      )}
 
-      {extraSeleccionada && (
-        <div style={{ maxWidth: "800px", margin: "2rem auto" }}>
-          {analisisExtraSeleccionada.map(({ id, icon, texto }) => {
-            const raw = predictions[extraSeleccionada];
-            const porcentaje = parseFloat((raw * 10).toFixed(1));
-
-            // Definimos el rango ideal por campo
-            const ideal =
-              {
-                Avg_Daily_Usage_Hours: 30, // hasta 3 hrs (3 * 10)
-                Sleep_Hours_Per_Night: 70, // ideal 7 hrs (7 * 10)
-                Relationship_Status: 50, // valor neutro
-              }[extraSeleccionada] || 50;
-
-            // Determinar color del progreso
-            const tipo = interpretacionPorCampo[extraSeleccionada] || "neutro";
-            let colorBarra = "#2a9d8f"; // verde
-
-            if (tipo === "positivo") {
-              if (porcentaje < ideal - 20) colorBarra = "#e76f51"; // rojo
-              else if (porcentaje < ideal - 10) colorBarra = "#f4a261"; // naranja
-            } else if (tipo === "negativo") {
-              if (porcentaje > ideal + 20) colorBarra = "#e76f51";
-              else if (porcentaje > ideal + 10) colorBarra = "#f4a261";
-            }
+        <div className="banners-analisis" style={{ marginTop: "1.5rem" }}>
+          {analisis.map(({ id, icon, texto, usadas }) => {
+            let borderColor = "#cde4f2";
+            if (icon?.type === FaCheckCircle) borderColor = "#2a9d8f";
+            if (icon?.type === FaExclamationTriangle) borderColor = "#f4a261";
+            if (icon?.type === FaTimesCircle) borderColor = "#e76f51";
 
             return (
               <div
                 key={id}
                 style={{
-                  background: "#fdfdfd",
-                  border: "2px solid #ccc",
-                  borderRadius: "12px",
-                  padding: "1rem 1.5rem",
-                  marginBottom: "2rem",
+                  display: "flex",
+                  flexDirection: "column",
+                  background: "#f9f9f9",
+                  border: `2px solid ${borderColor}`,
+                  borderRadius: "10px",
+                  padding: "1rem",
+                  marginBottom: "1rem",
+                  maxWidth: "800px",
+                  marginLeft: "auto",
+                  marginRight: "auto",
                   boxShadow: "0 2px 6px rgba(0,0,0,0.05)",
                 }}
               >
                 <div
-                  style={{
-                    display: "flex",
-                    alignItems: "center",
-                    gap: "0.8rem",
-                    marginBottom: "0.5rem",
-                  }}
+                  style={{ display: "flex", alignItems: "center", gap: "1rem" }}
                 >
-                  {icon} <strong style={{ color: "#444" }}>{texto}</strong>
+                  {icon}
+                  <span style={{ color: "#333" }}>{texto}</span>
                 </div>
 
-                <div style={{ marginTop: "0.7rem" }}>
+                {usadas.length > 0 && (
                   <div
                     style={{
-                      display: "flex",
-                      justifyContent: "space-between",
-                      fontSize: "0.85rem",
-                      marginBottom: "0.2rem",
-                      color: "#666",
+                      marginTop: "0.5rem",
+                      fontSize: "0.7rem",
+                      color: "#777",
+                      fontStyle: "italic",
+                      paddingLeft: "2rem",
                     }}
                   >
-                    <span>0%</span>
-                    <span>Ideal: {ideal}%</span>
-                    <span>100%</span>
+                    Variables usadas:{" "}
+                    {usadas.map((v) => camposHumanos[v] || v).join(", ")}
                   </div>
-
-                  <div
-                    style={{
-                      position: "relative",
-                      height: "14px",
-                      background: "#e0e0e0",
-                      borderRadius: "7px",
-                      overflow: "hidden",
-                    }}
-                  >
-                    <div
-                      style={{
-                        width: `${porcentaje}%`,
-                        background: colorBarra,
-                        height: "100%",
-                        transition: "width 0.5s ease-in-out",
-                      }}
-                    />
-                    <div
-                      style={{
-                        position: "absolute",
-                        left: `${ideal}%`,
-                        top: 0,
-                        bottom: 0,
-                        width: "2px",
-                        background: "#333",
-                        opacity: 0.7,
-                      }}
-                    />
-                  </div>
-                </div>
+                )}
               </div>
             );
           })}
         </div>
-      )}
-    </section>
-  );
-});
+
+        {analisisAcademico.length > 0 && (
+          <div
+            style={{
+              display: "flex",
+              flexDirection: "column",
+              background: "#eef6fb",
+              border: "2px solid #cde4f2",
+              borderRadius: "10px",
+              padding: "1rem",
+              marginTop: "2rem",
+              maxWidth: "800px",
+              marginLeft: "auto",
+              marginRight: "auto",
+              boxShadow: "0 2px 6px rgba(0,0,0,0.05)",
+            }}
+          >
+            <div style={{ display: "flex", alignItems: "center", gap: "1rem" }}>
+              <FaInfoCircle color="#0077b6" size={28} />
+              <div>
+                <strong style={{ color: "#0077b6" }}>
+                  Evaluación de tu rendimiento académico
+                </strong>
+                <p style={{ margin: "0.3rem 0", color: "#333" }}>
+                  {analisisAcademico[0].texto}
+                </p>
+              </div>
+            </div>
+
+            {analisisAcademico[0].usadas?.length > 0 && (
+              <div
+                style={{
+                  marginTop: "0.5rem",
+                  fontSize: "0.7rem",
+                  color: "#555",
+                  fontStyle: "italic",
+                  paddingLeft: "2rem",
+                }}
+              >
+                Variables usadas:{" "}
+                {analisisAcademico[0].usadas
+                  .map((v) => camposHumanos[v] || v)
+                  .join(", ")}
+              </div>
+            )}
+          </div>
+        )}
+
+        {clavesExtras.length > 0 && (
+          <div style={{ marginTop: "2rem", textAlign: "center" }}>
+            <p style={{ marginBottom: "1rem", color: "#333" }}>
+              Para ver más predicciones, selecciona la de tu preferencia:
+            </p>
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "center",
+                gap: "1rem",
+                flexWrap: "wrap",
+              }}
+            >
+              <div className="extra-buttons-container">
+                {botonesExtras.map((btn) => (
+                  <button
+                    key={btn.key}
+                    onClick={() => setExtraSeleccionada(btn.key)}
+                    className="btn-extra"
+                    style={{ background: btn.gradient }}
+                  >
+                    <span className="icon">{btn.icon}</span>
+                    <span className="text">{btn.label}</span>
+                  </button>
+                ))}
+              </div>
+            </div>
+          </div>
+        )}
+
+        {extraSeleccionada && (
+          <div style={{ maxWidth: "800px", margin: "2rem auto" }}>
+            {analisisExtraSeleccionada.map(({ id, icon, texto, usadas }) => {
+              const raw = predictions[extraSeleccionada];
+              const porcentaje = parseFloat((raw * 10).toFixed(1));
+
+              // Definimos el rango ideal por campo
+              const ideal =
+                {
+                  Avg_Daily_Usage_Hours: 30, // hasta 3 hrs (3 * 10)
+                  Sleep_Hours_Per_Night: 70, // ideal 7 hrs (7 * 10)
+                  Relationship_Status: 50, // valor neutro
+                }[extraSeleccionada] || 50;
+
+              // Determinar color del progreso
+              const tipo =
+                interpretacionPorCampo[extraSeleccionada] || "neutro";
+              let colorBarra = "#2a9d8f"; // verde
+
+              if (tipo === "positivo") {
+                if (porcentaje < ideal - 20) colorBarra = "#e76f51"; // rojo
+                else if (porcentaje < ideal - 10) colorBarra = "#f4a261"; // naranja
+              } else if (tipo === "negativo") {
+                if (porcentaje > ideal + 20) colorBarra = "#e76f51";
+                else if (porcentaje > ideal + 10) colorBarra = "#f4a261";
+              }
+
+              return (
+                <div
+                  key={id}
+                  style={{
+                    background: "#fdfdfd",
+                    border: "2px solid #ccc",
+                    borderRadius: "12px",
+                    padding: "1rem 1.5rem",
+                    marginBottom: "2rem",
+                    boxShadow: "0 2px 6px rgba(0,0,0,0.05)",
+                  }}
+                >
+                  <div
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      gap: "0.8rem",
+                      marginBottom: "0.5rem",
+                    }}
+                  >
+                    {icon} <strong style={{ color: "#444" }}>{texto}</strong>
+                  </div>
+
+                  <div style={{ marginTop: "0.7rem" }}>
+                    <div
+                      style={{
+                        display: "flex",
+                        justifyContent: "space-between",
+                        fontSize: "0.85rem",
+                        marginBottom: "0.2rem",
+                        color: "#666",
+                      }}
+                    >
+                      <span>0%</span>
+                      <span>Ideal: {ideal}%</span>
+                      <span>100%</span>
+                    </div>
+
+                    <div
+                      style={{
+                        position: "relative",
+                        height: "14px",
+                        background: "#e0e0e0",
+                        borderRadius: "7px",
+                        overflow: "hidden",
+                      }}
+                    >
+                      <div
+                        style={{
+                          width: `${porcentaje}%`,
+                          background: colorBarra,
+                          height: "100%",
+                          transition: "width 0.5s ease-in-out",
+                        }}
+                      />
+                      <div
+                        style={{
+                          position: "absolute",
+                          left: `${ideal}%`,
+                          top: 0,
+                          bottom: 0,
+                          width: "2px",
+                          background: "#333",
+                          opacity: 0.7,
+                        }}
+                      />
+                    </div>
+                  </div>
+                  {usadas.length > 0 && (
+                    <div
+                      style={{
+                        marginTop: "0.5rem",
+                        fontSize: "0.7rem",
+                        color: "#777",
+                        fontStyle: "italic",
+                        paddingLeft: "1rem",
+                      }}
+                    >
+                      Variables usadas:{" "}
+                      {usadas.map((v) => camposHumanos[v] || v).join(", ")}
+                    </div>
+                  )}
+                </div>
+              );
+            })}
+          </div>
+        )}
+      </section>
+    );
+  }
+);
 
 export default Predicciones;

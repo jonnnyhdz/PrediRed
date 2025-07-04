@@ -349,7 +349,13 @@ export default function Formulario({ onPredicciones }) {
       temporizadores.forEach(clearTimeout);
 
       // Lanzar predicciones al componente padre
-      onPredicciones({ ...data.predictions, Student_ID: form.Student_ID });
+onPredicciones({
+  predictions: data.predictions,
+  Student_ID: form.Student_ID,
+  variables_por_modelo: data.variables_por_modelo,
+  userData: traducido, // ← esto es lo que necesitan los gráficos de modelos
+});
+
 
       // Deslizar hacia predicciones
       setTimeout(() => {

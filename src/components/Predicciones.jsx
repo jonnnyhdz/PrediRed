@@ -62,80 +62,81 @@ const colores = [
 ];
 
 const generarAnalisis = (key, porcentaje) => {
-  const tipo = interpretacionPorCampo[key] || "neutro";
   const label = camposHumanos[key] || key;
+  const valorTexto = `${porcentaje}%`;
 
-  if (key === "Conflicts_Over_Social_Media") {
-    const promedio = promedios[key] * 10;
-    if (porcentaje < promedio - 10)
-      return {
-        icon: <FaCheckCircle color="#2a9d8f" />,
-        texto: `Tu nivel de conflictos es bajo (${porcentaje}%) y menor al promedio (${promedio}%). Bien ahí.`,
-      };
-    if (porcentaje <= promedio + 10)
-      return {
-        icon: <FaExclamationTriangle color="#f4a261" />,
-        texto: `Tu nivel de conflictos es similar al promedio (${porcentaje}% vs ${promedio}%). Mantente alerta.`,
-      };
-    return {
-      icon: <FaTimesCircle color="#e76f51" />,
-      texto: `Tu nivel de conflictos es alto (${porcentaje}%), por encima del promedio (${promedio}%). Considera mejorar.`,
-    };
-  }
-
-  if (tipo === "estado") {
-    return {
-      icon: <FaHeart color="#d62828" />,
-      texto: `Tu estado sentimental actual tiene un valor de ${porcentaje}%.`,
-    };
-  }
-
-  if (tipo === "positivo") {
+  if (key === "Mental_Health_Score") {
     if (porcentaje >= 85)
       return {
         icon: <FaCheckCircle color="#2a9d8f" />,
-        texto: `"${label}" es excelente (${porcentaje}%). Sigue así.`,
+        texto: `Tu salud mental está en muy buen estado, reflejando un ${valorTexto} de estabilidad emocional. Se nota que sabes escucharte y cuidarte.`,
       };
     if (porcentaje >= 60)
       return {
         icon: <FaCheckCircle color="#4caf50" />,
-        texto: `"${label}" está bien (${porcentaje}%). Vas por buen camino.`,
+        texto: `Tienes una salud mental bastante estable, con un nivel de ${valorTexto}. No es perfecto, pero vas bien y es importante seguirte acompañando con paciencia.`,
       };
     if (porcentaje >= 30)
       return {
         icon: <FaExclamationTriangle color="#f4a261" />,
-        texto: `Necesitas mejorar en "${label}" (${porcentaje}%).`,
+        texto: `Tu estado emocional muestra señales de desgaste, con un ${valorTexto}. Tal vez estás pasando por momentos pesados. Hablar con alguien o darte un respiro puede ayudarte más de lo que crees.`,
       };
     return {
       icon: <FaTimesCircle color="#e76f51" />,
-      texto: `Nivel muy bajo en "${label}" (${porcentaje}%). Atiéndelo.`,
+      texto: `Se percibe un estado emocional delicado, con apenas un ${valorTexto} en tu salud mental. No ignores lo que sientes. Hablar, pedir ayuda y hacer pausas son pasos valientes y necesarios.`,
     };
   }
 
-  if (tipo === "negativo") {
+  if (key === "Addicted_Score") {
     if (porcentaje >= 85)
       return {
         icon: <FaTimesCircle color="#e76f51" />,
-        texto: `Alto nivel de "${label}" (${porcentaje}%). Podría afectarte.`,
+        texto: `Tu nivel de uso de redes sociales es muy alto, alcanzando un ${valorTexto}. Esto puede estar robándote tiempo, atención y hasta energía mental. Reflexiona si necesitas una pausa digital.`,
       };
     if (porcentaje >= 60)
       return {
         icon: <FaExclamationTriangle color="#f4a261" />,
-        texto: `"${label}" es elevado (${porcentaje}%). Cuidado.`,
+        texto: `Tu nivel de conexión con redes es elevado (${valorTexto}), y aunque no es extremo, podrías empezar a notar cómo influye en tu rutina o ánimo.`,
       };
     if (porcentaje >= 30)
       return {
         icon: <FaCheckCircle color="#4caf50" />,
-        texto: `"${label}" es moderado (${porcentaje}%). Aceptable.`,
+        texto: `Tu nivel de uso de redes es moderado, con un ${valorTexto}. Parece que estás encontrando cierto equilibrio. Aún así, vale la pena revisar si usas redes por hábito o por elección.`,
       };
     return {
       icon: <FaCheckCircle color="#2a9d8f" />,
-      texto: `Bajo nivel de "${label}" (${porcentaje}%). Todo bajo control.`,
+      texto: `Tienes un uso bastante saludable de redes sociales, con solo un ${valorTexto}. Mantener este balance no es fácil, pero lo estás logrando.`,
     };
   }
 
-  return { icon: <FaInfoCircle />, texto: `"${label}": ${porcentaje}%.` };
+  if (key === "Affects_Academic_Performance") {
+    if (porcentaje >= 85)
+      return {
+        icon: <FaTimesCircle color="#e76f51" />,
+        texto: `Tu rendimiento académico está siendo fuertemente afectado, con un impacto estimado del ${valorTexto}. Es momento de replantear prioridades y buscar un mejor equilibrio.`,
+      };
+    if (porcentaje >= 60)
+      return {
+        icon: <FaExclamationTriangle color="#f4a261" />,
+        texto: `Tu rutina parece estar afectando tu rendimiento académico en un ${valorTexto}. No es dramático, pero sí vale la pena hacer ajustes antes de que se complique más.`,
+      };
+    if (porcentaje >= 30)
+      return {
+        icon: <FaCheckCircle color="#4caf50" />,
+        texto: `Tus estudios muestran un impacto moderado del ${valorTexto}. Puedes manejarlo, pero es bueno estar consciente y prevenir que crezca.`,
+      };
+    return {
+      icon: <FaCheckCircle color="#2a9d8f" />,
+      texto: `Tus hábitos no parecen estar interfiriendo con tu rendimiento escolar. Con un nivel de afectación del ${valorTexto}, estás manejando bien tu tiempo.`,
+    };
+  }
+
+  return {
+    icon: <FaInfoCircle />,
+    texto: `Resultado de "${label}": ${valorTexto}.`,
+  };
 };
+
 
 const generarData = (predictions, claves) => {
   const labels = [];
@@ -192,29 +193,6 @@ const generarTextos = (
 const Predicciones = forwardRef(
   ({ predictions, variables_por_modelo = {} }, ref) => {
     console.log("🔍 Variables por modelo:", variables_por_modelo);
-    const [extraSeleccionada, setExtraSeleccionada] = useState(null);
-
-    const botonesExtras = [
-      {
-        key: "Avg_Daily_Usage_Hours",
-        label: "Análisis de horas en redes",
-        icon: <FaMobileAlt style={{ color: "#ffffff", fontSize: "1.2rem" }} />,
-        gradient:
-          "linear-gradient(to right,rgb(241, 107, 17),rgb(253, 220, 90))", // rojo → amarillo
-      },
-      {
-        key: "Sleep_Hours_Per_Night",
-        label: "Calidad de sueño",
-        icon: <FaBed style={{ color: "#ffffff", fontSize: "1.2rem" }} />,
-        gradient: "linear-gradient(to right, #2193b0, #6dd5ed)", // azul claro
-      },
-      {
-        key: "Relationship_Status",
-        label: "Estado sentimental",
-        icon: <FaHeart style={{ color: "#ffffff", fontSize: "1.2rem" }} />,
-        gradient: "linear-gradient(to right, #ff416c, #ff4b2b)", // rosa → rojo intenso
-      },
-    ];
 
     if (!predictions) return null;
 
@@ -241,14 +219,7 @@ const Predicciones = forwardRef(
       "academico",
       variables_por_modelo
     );
-    const analisisExtraSeleccionada = extraSeleccionada
-      ? generarTextos(
-          predictions,
-          [extraSeleccionada],
-          "extra",
-          variables_por_modelo
-        )
-      : [];
+
 
     return (
       <section className="predicciones" ref={ref}>
@@ -384,151 +355,6 @@ const Predicciones = forwardRef(
                   .join(", ")}
               </div>
             )}
-          </div>
-        )}
-
-        {clavesExtras.length > 0 && (
-          <div style={{ marginTop: "2rem", textAlign: "center" }}>
-            <p style={{ marginBottom: "1rem", color: "#333" }}>
-              Para ver más predicciones, selecciona la de tu preferencia:
-            </p>
-            <div
-              style={{
-                display: "flex",
-                justifyContent: "center",
-                gap: "1rem",
-                flexWrap: "wrap",
-              }}
-            >
-              <div className="extra-buttons-container">
-                {botonesExtras.map((btn) => (
-                  <button
-                    key={btn.key}
-                    onClick={() => setExtraSeleccionada(btn.key)}
-                    className="btn-extra"
-                    style={{ background: btn.gradient }}
-                  >
-                    <span className="icon">{btn.icon}</span>
-                    <span className="text">{btn.label}</span>
-                  </button>
-                ))}
-              </div>
-            </div>
-          </div>
-        )}
-
-        {extraSeleccionada && (
-          <div style={{ maxWidth: "800px", margin: "2rem auto" }}>
-            {analisisExtraSeleccionada.map(({ id, icon, texto, usadas }) => {
-              const raw = predictions[extraSeleccionada];
-              const porcentaje = parseFloat((raw * 10).toFixed(1));
-
-              // Definimos el rango ideal por campo
-              const ideal =
-                {
-                  Avg_Daily_Usage_Hours: 30, // hasta 3 hrs (3 * 10)
-                  Sleep_Hours_Per_Night: 70, // ideal 7 hrs (7 * 10)
-                  Relationship_Status: 50, // valor neutro
-                }[extraSeleccionada] || 50;
-
-              // Determinar color del progreso
-              const tipo =
-                interpretacionPorCampo[extraSeleccionada] || "neutro";
-              let colorBarra = "#2a9d8f"; // verde
-
-              if (tipo === "positivo") {
-                if (porcentaje < ideal - 20) colorBarra = "#e76f51"; // rojo
-                else if (porcentaje < ideal - 10) colorBarra = "#f4a261"; // naranja
-              } else if (tipo === "negativo") {
-                if (porcentaje > ideal + 20) colorBarra = "#e76f51";
-                else if (porcentaje > ideal + 10) colorBarra = "#f4a261";
-              }
-
-              return (
-                <div
-                  key={id}
-                  style={{
-                    background: "#fdfdfd",
-                    border: "2px solid #ccc",
-                    borderRadius: "12px",
-                    padding: "1rem 1.5rem",
-                    marginBottom: "2rem",
-                    boxShadow: "0 2px 6px rgba(0,0,0,0.05)",
-                  }}
-                >
-                  <div
-                    style={{
-                      display: "flex",
-                      alignItems: "center",
-                      gap: "0.8rem",
-                      marginBottom: "0.5rem",
-                    }}
-                  >
-                    {icon} <strong style={{ color: "#444" }}>{texto}</strong>
-                  </div>
-
-                  <div style={{ marginTop: "0.7rem" }}>
-                    <div
-                      style={{
-                        display: "flex",
-                        justifyContent: "space-between",
-                        fontSize: "0.85rem",
-                        marginBottom: "0.2rem",
-                        color: "#666",
-                      }}
-                    >
-                      <span>0%</span>
-                      <span>Ideal: {ideal}%</span>
-                      <span>100%</span>
-                    </div>
-
-                    <div
-                      style={{
-                        position: "relative",
-                        height: "14px",
-                        background: "#e0e0e0",
-                        borderRadius: "7px",
-                        overflow: "hidden",
-                      }}
-                    >
-                      <div
-                        style={{
-                          width: `${porcentaje}%`,
-                          background: colorBarra,
-                          height: "100%",
-                          transition: "width 0.5s ease-in-out",
-                        }}
-                      />
-                      <div
-                        style={{
-                          position: "absolute",
-                          left: `${ideal}%`,
-                          top: 0,
-                          bottom: 0,
-                          width: "2px",
-                          background: "#333",
-                          opacity: 0.7,
-                        }}
-                      />
-                    </div>
-                  </div>
-                  {usadas.length > 0 && (
-                    <div
-                      style={{
-                        marginTop: "0.5rem",
-                        fontSize: "0.7rem",
-                        color: "#777",
-                        fontStyle: "italic",
-                        paddingLeft: "1rem",
-                      }}
-                    >
-                      Variables usadas:{" "}
-                      {usadas.map((v) => camposHumanos[v] || v).join(", ")}
-                    </div>
-                  )}
-                </div>
-              );
-            })}
           </div>
         )}
       </section>

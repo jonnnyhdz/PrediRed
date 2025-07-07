@@ -15,7 +15,6 @@ const preguntasPredefinidas = [
   { texto: "¿Cómo está mi salud mental?", clave: "Mental_Health_Score" },
   { texto: "¿Tengo conflictos por redes sociales?", clave: "Conflicts_Over_Social_Media" },
   { texto: "¿Soy adicto a las redes sociales?", clave: "Addicted_Score" },
-  { texto: "¿Es demasiado mi tiempo en redes?", clave: "Avg_Daily_Usage_Hours" },
   { texto: "¿Estoy durmiendo lo suficiente?", clave: "Sleep_Hours_Per_Night" },
   { texto: "¿Afectan las redes a mi rendimiento escolar?", clave: "Affects_Academic_Performance" },
   { texto: "¿Estoy emocionalmente equilibrado?", clave: "Mental_Health_Score" },

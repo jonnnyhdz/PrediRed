@@ -2,7 +2,8 @@ import Plot from "react-plotly.js";
 import { useEffect, useState, useRef } from "react";
 
 const KMeansChart = ({ predictions }) => {
-  const { Avg_Daily_Usage_Hours, Sleep_Hours_Per_Night } = predictions;
+  const { Addicted_Score, Mental_Health_Score, Affects_Academic_Performance } =
+    predictions;
 
   const chartContainerRef = useRef(null);
   const [chartWidth, setChartWidth] = useState(600);
@@ -18,26 +19,26 @@ const KMeansChart = ({ predictions }) => {
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
+  // Datos históricos simplificados
   const historicalData = [
-    { x: 8.0, y: 6.0, cluster: 1 },
-    { x: 6.0, y: 3.0, cluster: 0 },
-    { x: 4.0, y: 6.0, cluster: 0 },
-    { x: 1.0, y: 6.0, cluster: 0 },
-    { x: 10.0, y: 6.0, cluster: 1 },
-    { x: 6.0, y: 6.0, cluster: 0 },
-    { x: 6.0, y: 8.0, cluster: 0 },
-    { x: 4.0, y: 6.0, cluster: 0 },
-    { x: 3.0, y: 5.0, cluster: 0 },
-    { x: 8.0, y: 7.0, cluster: 1 },
+    { x: 6, y: 5, cluster: 0 },
+    { x: 8, y: 7, cluster: 1 },
+    { x: 4, y: 4, cluster: 0 },
+    { x: 9, y: 8, cluster: 1 },
+    { x: 3, y: 3, cluster: 0 },
+    { x: 2, y: 2, cluster: 0 },
+    { x: 7, y: 8, cluster: 1 },
+    { x: 5, y: 4, cluster: 0 },
+    { x: 9, y: 9, cluster: 1 },
+    { x: 7, y: 6, cluster: 1 },
   ];
 
   const clusterNames = [
-    "Alta actividad y poco sueño",
-    "Uso moderado y buen descanso",
-    "Bajo uso y descanso irregular",
+    "Estado emocional equilibrado",
+    "Posible sobrecarga emocional y académica",
   ];
 
-  const grouped = [0, 1, 2].map((cluster) => {
+  const grouped = [0, 1].map((cluster) => {
     const puntos = historicalData.filter((d) => d.cluster === cluster);
     const x = puntos.map((d) => d.x);
     const y = puntos.map((d) => d.y);
@@ -48,7 +49,7 @@ const KMeansChart = ({ predictions }) => {
     return { cluster, x, y, centroid };
   });
 
-  const userPoint = [Avg_Daily_Usage_Hours, Sleep_Hours_Per_Night];
+  const userPoint = [Addicted_Score, Affects_Academic_Performance];
   const userClusterIndex = grouped.reduce((minIdx, g, i) => {
     const dist = Math.sqrt(
       Math.pow(userPoint[0] - g.centroid[0], 2) +
@@ -61,7 +62,7 @@ const KMeansChart = ({ predictions }) => {
     return dist < minDist ? i : minIdx;
   }, 0);
 
-  const colors = ["#f87171", "#60a5fa", "#34d399"];
+  const colors = ["#60a5fa", "#f87171"];
 
   const clusterData = grouped.map((g, i) => ({
     x: g.x,
@@ -77,7 +78,7 @@ const KMeansChart = ({ predictions }) => {
     y: [g.centroid[1]],
     mode: "markers",
     type: "scatter",
-    marker: { color: "#555", symbol: "x", size: 12 },
+    marker: { color: "#000", symbol: "x", size: 12 },
     showlegend: false,
   }));
 
@@ -86,7 +87,12 @@ const KMeansChart = ({ predictions }) => {
     y: [userPoint[1]],
     mode: "markers",
     type: "scatter",
-    marker: { color: "#000", symbol: "star", size: 14 },
+    marker: {
+      color: colors[userClusterIndex],
+      symbol: "star",
+      size: 14,
+      line: { width: 2, color: "#000" },
+    },
     showlegend: false,
   };
 
@@ -104,40 +110,41 @@ const KMeansChart = ({ predictions }) => {
       }}
     >
       <h3 style={{ marginBottom: "0.5rem" }}>
-        📊 Clustering K-Means - Hábitos de Uso
+        📊 Clustering K-Means - Perfil Psicoacadémico
       </h3>
 
       <p
         style={{
           fontSize: "15px",
-          color: "#374151",
+          color: "#4c1d95", // Texto morado oscuro
           lineHeight: "1.6",
           marginBottom: "1.5rem",
-          backgroundColor: "#ddd6fe",
+          backgroundColor: "#ede9fe", // Fondo lavanda claro
           padding: "1rem",
           borderRadius: "12px",
-          borderLeft: "4px solid #8b5cf6",
+          borderLeft: "4px solid #7c3aed", // Borde morado vibrante
           maxWidth: "900px",
         }}
       >
-        <strong>¿Qué estás viendo?</strong> Esta gráfica agrupa a personas según
-        su <strong>uso diario de redes</strong> y{" "}
-        <strong>horas de sueño</strong>.
+        <strong>¿Qué estás viendo?</strong> Esta gráfica agrupa perfiles según
+        su nivel de <strong>adicción a redes</strong> y{" "}
+        <strong>afectación académica</strong>. Estos dos factores permiten
+        detectar patrones en el comportamiento digital de los estudiantes.
         <br />
-        🔴 <strong>Puntos de colores</strong>: representan perfiles similares ya
-        registrados.
-        <br />❌ <strong>X grises</strong>: centro promedio de cada grupo
-        (centroide).
-        <br />⭐ <strong>Estrella negra</strong>: tú. Así se comparan tus
-        hábitos con los grupos.
+        🔵 <strong>Puntos azules</strong>: perfiles con equilibrio emocional.
+        <br />
+        🔴 <strong>Puntos rojos</strong>: posibles señales de sobrecarga.
+        <br />❌ <strong>X negras</strong>: centro de cada grupo.
+        <br />⭐ <strong>Estrella</strong>: tú, posicionado según tus propias
+        respuestas.
       </p>
 
       <Plot
         data={[...clusterData, ...centroids, userTrace]}
         layout={{
-          title: "Distribución de perfiles según hábitos",
-          xaxis: { title: "Horas en redes" },
-          yaxis: { title: "Horas de sueño" },
+          title: "Agrupación según Adicción y Rendimiento",
+          xaxis: { title: "Nivel de Adicción (0-10)" },
+          yaxis: { title: "Afectación Académica (0-10)" },
           showlegend: false,
           width: chartWidth,
           height: 450,
@@ -167,25 +174,20 @@ const KMeansChart = ({ predictions }) => {
 
         <ul style={{ marginTop: "1rem", paddingLeft: "1.25rem" }}>
           <li style={{ marginBottom: "0.5rem" }}>
-            🔴{" "}
-            <strong style={{ color: "#f87171" }}>
-              Alta actividad y poco sueño:
-            </strong>{" "}
-            Mucho tiempo en redes sociales y pocas horas de descanso.
-          </li>
-          <li style={{ marginBottom: "0.5rem" }}>
             🔵{" "}
             <strong style={{ color: "#60a5fa" }}>
-              Uso moderado y buen descanso:
+              Estado emocional equilibrado:
             </strong>{" "}
-            Horas balanceadas de redes y sueño saludable.
+            Indica que tu nivel de adicción y afectación académica están dentro
+            de rangos saludables.
           </li>
           <li style={{ marginBottom: "0.5rem" }}>
-            🟢{" "}
-            <strong style={{ color: "#34d399" }}>
-              Bajo uso y descanso irregular:
+            🔴{" "}
+            <strong style={{ color: "#f87171" }}>
+              Posible sobrecarga emocional y académica:
             </strong>{" "}
-            Poco tiempo en redes pero con sueño desordenado.
+            Tus respuestas sugieren que podrías estar experimentando altos
+            niveles de uso digital y dificultades escolares.
           </li>
         </ul>
       </div>
